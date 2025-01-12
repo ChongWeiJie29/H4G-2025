@@ -31,8 +31,13 @@ const Carousel = styled.div`
     `translateX(-${props.translateX}%)`};
 `;
 
-const Item = styled.div`
+const CarouselCard = styled.div`
   flex: 0 0 100%;
+  display: flex;
+  justify-content: space-around;
+`;
+
+const Item = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -82,9 +87,9 @@ const AvailableProductsCard: React.FC = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) =>
-        prevIndex === products.length - 1 ? 0 : prevIndex + 1
+        prevIndex === products.length - 1 ? 0 : prevIndex + 1,
       );
-    }, 3000); // Rotate every 3 seconds
+    }, 4000); // Rotate every 4 seconds
 
     return () => clearInterval(interval); // Clear interval on component unmount
   }, [products.length]);
@@ -92,13 +97,13 @@ const AvailableProductsCard: React.FC = () => {
   // Manual navigation
   const handlePrev = () => {
     setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? products.length - 1 : prevIndex - 1
+      prevIndex === 0 ? products.length - 1 : prevIndex - 1,
     );
   };
 
   const handleNext = () => {
     setCurrentIndex((prevIndex) =>
-      prevIndex === products.length - 1 ? 0 : prevIndex + 1
+      prevIndex === products.length - 1 ? 0 : prevIndex + 1,
     );
   };
 
@@ -108,10 +113,16 @@ const AvailableProductsCard: React.FC = () => {
       <CarouselWrapper>
         <Carousel translateX={currentIndex * 100}>
           {products.map((product, index) => (
-            <Item key={index}>
-              <ProductImage src={product.image} alt={product.name} />
-              <h3>{product.name}</h3>
-            </Item>
+            <CarouselCard key={index}>
+              <Item>
+                <ProductImage src={product.image} alt={product.name} />
+                <h3>{product.name}</h3>
+              </Item>
+              <div>
+                <strong>Description:</strong>
+                <p>{product.description}</p>
+              </div>
+            </CarouselCard>
           ))}
         </Carousel>
         <Arrows>
@@ -124,4 +135,3 @@ const AvailableProductsCard: React.FC = () => {
 };
 
 export default AvailableProductsCard;
-
