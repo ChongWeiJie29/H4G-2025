@@ -24,7 +24,7 @@ const CarouselWrapper = styled.div`
   position: relative;
 `;
 
-const Carousel = styled.div`
+const Carousel = styled.div<{ translateX: number }>`
   display: flex;
   transition: transform 0.5s ease;
   transform: ${(props: { translateX: number }) =>
