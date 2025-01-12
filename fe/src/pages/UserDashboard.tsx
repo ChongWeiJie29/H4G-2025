@@ -1,8 +1,9 @@
-import styled from 'styled-components';
-import VoucherBalanceCard from '../components/UserDashboard/VoucherBalanceCard';
-import RecentTransactionsCard from '../components/UserDashboard/RecentTransactionsCard';
-import NotificationsCard from '../components/UserDashboard/NotificationsCard';
-import AvailableProductsCard from '../components/UserDashboard/AvailableProductsCard';
+import styled from "styled-components";
+import VoucherBalanceCard from "../components/UserDashboard/VoucherBalanceCard";
+import RecentTransactionsCard from "../components/UserDashboard/RecentTransactionsCard";
+import NotificationsCard from "../components/UserDashboard/NotificationsCard";
+import AvailableProductsCard from "../components/UserDashboard/AvailableProductsCard";
+import ProfileDropdown from "../components/General/ProfileDropdown";
 
 const DashboardContainer = styled.div`
   max-width: 1200px;
@@ -28,20 +29,19 @@ const CardContainer = styled.div`
   gap: 20px;
 `;
 
-const ProfilePicture = styled.img`
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-`;
-
 const UserDashboard = () => {
+  const handleOptionClick = (option: string) => {
+    // replace with page navigation later on
+    console.log(option);
+  };
+
   return (
     <DashboardContainer>
       <DashboardHeader>
-        <h1>Welcome back, Sir</h1>
-        <ProfilePicture
-          src="/path-to-profile-picture.jpg"
-          alt="Profile"
+        <img src="/images/company_logo_small.png" alt="company_logo" height="80"></img>
+        <ProfileDropdown
+          profilePic="/images/profile-user.png"
+          onOptionClick={handleOptionClick}
         />
       </DashboardHeader>
       <DashboardBody>
@@ -57,4 +57,3 @@ const UserDashboard = () => {
 };
 
 export default UserDashboard;
-
