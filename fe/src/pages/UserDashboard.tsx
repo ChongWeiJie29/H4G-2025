@@ -4,7 +4,7 @@ import RecentTransactionsCard from "../components/UserDashboard/RecentTransactio
 import NotificationsCard from "../components/UserDashboard/NotificationsCard";
 import AvailableProductsCard from "../components/UserDashboard/AvailableProductsCard";
 import ProfileDropdown from "../components/General/ProfileDropdown";
-import User from "../Definitions/User";
+import MockUser from "../mockDatabase/MockUser";
 
 const DashboardContainer = styled.div`
   max-width: 1200px;
@@ -47,7 +47,7 @@ const UserDashboard = () => {
       </DashboardHeader>
       <DashboardBody>
         <CardContainer>
-          <VoucherBalanceCard voucherAmount={User.voucherAmount} />
+          <VoucherBalanceCard voucherAmount={MockUser.voucherAmount} />
           <RecentTransactionsCard />
           <NotificationsCard />
         </CardContainer>

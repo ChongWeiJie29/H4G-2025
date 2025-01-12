@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 const NotificationCard = styled.div`
-  flex: 0.5;
+  flex: 1;
   padding: 20px;
   background-color: white;
   border-radius: 10px;
