@@ -4,6 +4,7 @@ import RecentTransactionsCard from "../components/UserDashboard/RecentTransactio
 import NotificationsCard from "../components/UserDashboard/NotificationsCard";
 import AvailableProductsCard from "../components/UserDashboard/AvailableProductsCard";
 import ProfileDropdown from "../components/General/ProfileDropdown";
+import SidebarMenu from "../components/General/SideBarMenu";
 import MockUser from "../mockDatabase/MockUser";
 
 const DashboardContainer = styled.div`
@@ -31,7 +32,11 @@ const CardContainer = styled.div`
 `;
 
 const UserDashboard = () => {
-  const handleOptionClick = (option: string) => {
+  const handleProfileOptionClick = (option: string) => {
+    // replace with page navigation later on
+    console.log(option);
+  };
+  const handleSidebarOptionClick = (option: string) => {
     // replace with page navigation later on
     console.log(option);
   };
@@ -39,10 +44,14 @@ const UserDashboard = () => {
   return (
     <DashboardContainer>
       <DashboardHeader>
-        <img src="/images/company_logo_small.png" alt="company_logo" height="80"></img>
+        <img
+          src="/images/company_logo_small.png"
+          alt="company_logo"
+          height="80"
+        ></img>
         <ProfileDropdown
           profilePic="/images/profile-user.png"
-          onOptionClick={handleOptionClick}
+          onOptionClick={handleProfileOptionClick}
         />
       </DashboardHeader>
       <DashboardBody>
@@ -53,6 +62,7 @@ const UserDashboard = () => {
         </CardContainer>
         <AvailableProductsCard />
       </DashboardBody>
+      <SidebarMenu onOptionSelect={handleSidebarOptionClick} />
     </DashboardContainer>
   );
 };
