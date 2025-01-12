@@ -1,3 +1,5 @@
+import { Transaction } from "./Transaction";
+
 // Define the User type
 export interface User {
   status: "resident" | "admin";
@@ -7,5 +9,6 @@ export interface User {
   email: string;
   phone: string;
   voucherAmount: number | null; // Can be null if no balance
+  transactions: Transaction[];
 }
 
