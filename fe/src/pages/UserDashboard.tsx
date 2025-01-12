@@ -4,6 +4,7 @@ import RecentTransactionsCard from "../components/UserDashboard/RecentTransactio
 import NotificationsCard from "../components/UserDashboard/NotificationsCard";
 import AvailableProductsCard from "../components/UserDashboard/AvailableProductsCard";
 import ProfileDropdown from "../components/General/ProfileDropdown";
+import User from "../Definitions/User";
 
 const DashboardContainer = styled.div`
   max-width: 1200px;
@@ -46,7 +47,7 @@ const UserDashboard = () => {
       </DashboardHeader>
       <DashboardBody>
         <CardContainer>
-          <VoucherBalanceCard />
+          <VoucherBalanceCard voucherAmount={User.voucherAmount} />
           <RecentTransactionsCard />
           <NotificationsCard />
         </CardContainer>
