@@ -12,9 +12,8 @@ const CartItemsWrapper = styled.div`
 
 const CartItemCard = styled.div`
   display: grid;
-  grid-template-columns: 1fr 2fr 1fr 2fr;
+  grid-template-columns: 1fr 2fr 1fr 1fr;
   align-items: center;
-  background-color: #f5f5f5;
   padding: 10px;
   border-radius: 8px;
   border: 1px solid #ccc;
