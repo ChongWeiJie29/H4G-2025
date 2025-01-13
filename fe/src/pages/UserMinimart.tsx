@@ -8,6 +8,7 @@ import SearchBar from "../components/UserMinimart/SearchBar";
 import MockProducts from "../mockDatabase/MockProducts";
 import FilterModal from "../components/UserMinimart/FilterModal";
 import MockUser from "../mockDatabase/MockUser";
+import { useNavigate } from "react-router-dom"
 
 const MinimartContainer = styled.div`
   display: flex;
@@ -24,7 +25,7 @@ const MinimartBody = styled.div`
   padding: 16px;
 `;
 
-const SearchAndFilters = styled.div`
+const Toolbar = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -40,12 +41,13 @@ const ProductGrid = styled.div`
 `;
 
 const FilterButton = styled.button`
-  background: #fff;
-  border: none;
+  background: #eee;
+  border: 1px solid #ccc;
   border-radius: 4px;
   padding: 8px 16px;
   cursor: pointer;
 `;
+
 const VoucherButton = styled.button`
   background: #ffffff;
   border: 1px solid #ccc;
@@ -59,6 +61,16 @@ const VoucherButton = styled.button`
   font-weight: 500;
   color: #333;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+`;
+
+const ShoppingCartButton = styled.button`
+  background: #fff;
+  border: 2px solid #aaa;
+  border-radius: 8px;
+  padding: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
 `;
 
 const UserMinimart: React.FC = () => {
@@ -93,20 +105,25 @@ const UserMinimart: React.FC = () => {
     }));
   };
 
+  const navigate = useNavigate();
+
   return (
     <MinimartContainer>
       <UserPageHeader />
       <MinimartBody>
-        <SearchAndFilters>
+        <Toolbar>
           <SearchBar query={searchQuery} onSearchChange={setSearchQuery} />
+          <FilterButton onClick={() => setFilterModalOpen(true)}>
+            Filters
+          </FilterButton>
           <VoucherButton>
             <span style={{ marginRight: "8px" }}>💳</span>
             <p>: {MockUser.voucherAmount}</p>
           </VoucherButton>
-          <FilterButton onClick={() => setFilterModalOpen(true)}>
-            Filters
-          </FilterButton>
-        </SearchAndFilters>
+          <ShoppingCartButton>
+            <img src="/images/shopping-cart.png" alt="cart" width="35" onClick={() => navigate("/cart")}/>
+          </ShoppingCartButton>
+        </Toolbar>
         <FilterTags filters={filters} onRemoveFilter={removeFilter} />
         <ProductGrid>
           {filteredProducts.map((product, index) => (
