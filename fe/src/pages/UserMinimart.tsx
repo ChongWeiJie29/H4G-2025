@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import UserPageHeader from "../components/General/UserPageHeader";
 import SideBarMenu from "../components/General/SideBarMenu";
@@ -48,12 +48,22 @@ const ProductGrid = styled.div`
 `;
 
 const UserMinimart: React.FC = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [products] = useState(MockProducts);
+
+  // filter products based on search query
+  const filteredProducts = products.filter(
+    (product) =>
+      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.description.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
+
   return (
     <MinimartContainer>
       <UserPageHeader />
       <MinimartBody>
         <SearchAndFilters>
-          <SearchBar />
+          <SearchBar query={searchQuery} onSearchChange={setSearchQuery} />
           <VoucherButton>
             <span style={{ marginRight: "8px" }}>💳</span>
             Voucher amount
@@ -61,7 +71,7 @@ const UserMinimart: React.FC = () => {
         </SearchAndFilters>
         <FilterTags />
         <ProductGrid>
-          {MockProducts.map((product, index) => (
+          {filteredProducts.map((product, index) => (
             <ProductCard key={index} product={product} />
           ))}
         </ProductGrid>

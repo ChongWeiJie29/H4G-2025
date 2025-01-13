@@ -1,36 +1,46 @@
 import React from "react";
 import styled from "styled-components";
 
-const SearchBarContainer = styled.div`
+const SearchContainer = styled.div`
   display: flex;
   align-items: center;
-  background: #fff;
+  background: white;
+  border-radius: 8px;
+  padding: 4px 8px;
+  flex: 0.5;
   border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 8px;
-  width: 100%;
-  max-width: 400px;
 `;
 
 const SearchInput = styled.input`
   border: none;
   outline: none;
   flex: 1;
-  padding: 4px;
+  padding: 8px;
   font-size: 14px;
 `;
 
-const SearchIcon = styled.span`
-  margin-right: 8px;
-  color: #999;
+const SearchButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
 `;
 
-const SearchBar: React.FC = () => {
+interface SearchBarProps {
+  query: string;
+  onSearchChange: (query: string) => void;
+}
+
+const SearchBar: React.FC<SearchBarProps> = ({ query, onSearchChange }) => {
   return (
-    <SearchBarContainer>
-      <SearchIcon>🔍</SearchIcon>
-      <SearchInput type="text" placeholder="Search for item" />
-    </SearchBarContainer>
+    <SearchContainer>
+      <SearchInput
+        value={query}
+        placeholder="Search by item name or description"
+        onChange={(e) => onSearchChange(e.target.value)}
+      />
+      <SearchButton>🔍</SearchButton>
+    </SearchContainer>
   );
 };
 
