@@ -7,6 +7,7 @@ import FilterTags from "../components/UserMinimart/FilterTags";
 import SearchBar from "../components/UserMinimart/SearchBar";
 import MockProducts from "../mockDatabase/MockProducts";
 import FilterModal from "../components/UserMinimart/FilterModal";
+import MockUser from "../mockDatabase/MockUser";
 
 const MinimartContainer = styled.div`
   display: flex;
@@ -44,6 +45,20 @@ const FilterButton = styled.button`
   border-radius: 4px;
   padding: 8px 16px;
   cursor: pointer;
+`;
+const VoucherButton = styled.button`
+  background: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 0px 20px;
+  display: flex;
+  align-items: center;
+  gap: 0 0.3rem;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
 const UserMinimart: React.FC = () => {
@@ -84,6 +99,10 @@ const UserMinimart: React.FC = () => {
       <MinimartBody>
         <SearchAndFilters>
           <SearchBar query={searchQuery} onSearchChange={setSearchQuery} />
+          <VoucherButton>
+            <span style={{ marginRight: "8px" }}>💳</span>
+            <p>: {MockUser.voucherAmount}</p>
+          </VoucherButton>
           <FilterButton onClick={() => setFilterModalOpen(true)}>
             Filters
           </FilterButton>
