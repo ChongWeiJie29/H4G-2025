@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { Filters } from "../../definitions/Filters";
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -20,8 +21,35 @@ const ModalContent = styled.div`
   width: 300px;
 `;
 
-const FilterOption = styled.div`
-  margin-bottom: 12px;
+const Section = styled.div`
+  margin-bottom: 16px;
+`;
+
+const SectionTitle = styled.h4`
+  margin-bottom: 8px;
+`;
+
+const SectionOptions = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 2rem;
+`;
+
+const CheckboxLabel = styled.label`
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+`;
+
+const CheckboxInput = styled.input`
+  margin-right: 8px;
+`;
+
+const FilterButtons = styled.button`
+  position: relative;
+  left: 50%;
+  background: white;
+  border: none;
 `;
 
 const FilterButton = styled.button`
@@ -39,66 +67,98 @@ const FilterButton = styled.button`
 
 interface FilterModalProps {
   filters: { cost: number | null; type: string | null; inStock: boolean };
-  onApplyFilters: (filters: { cost: number | null; type: string | null; inStock: boolean }) => void;
+  onApplyFilters: (filters: {
+    cost: number | null;
+    type: string | null;
+    inStock: boolean;
+  }) => void;
   onClose: () => void;
 }
 
-const FilterModal: React.FC<FilterModalProps> = ({ filters, onApplyFilters, onClose }) => {
-  const [localFilters, setLocalFilters] = useState(filters);
+const FilterModal: React.FC<FilterModalProps> = ({
+  onApplyFilters,
+  onClose,
+}) => {
+  const [localFilters, setLocalFilters] = useState<Filters>({
+    cost: null,
+    type: null,
+    inStock: false,
+  });
+
+  const costOptions = [20, 40, 60, 80, 100];
+  const handleCheckboxChange = (key: keyof typeof localFilters, value: any) => {
+    setLocalFilters((prev: Filters) => ({
+      ...prev,
+      [key]: prev[key] === value ? null : value, // Toggle the value
+    }));
+  };
 
   return (
     <ModalOverlay>
       <ModalContent>
         <h3>Filters</h3>
-        <FilterOption>
-          <label>Cost:</label>
-          <input
-            type="number"
-            value={localFilters.cost ?? ""}
-            onChange={(e) =>
-              setLocalFilters((prev) => ({
-                ...prev,
-                cost: e.target.value ? parseFloat(e.target.value) : null,
-              }))
-            }
-          />
-        </FilterOption>
-        <FilterOption>
-          <label>Type:</label>
-          <select
-            value={localFilters.type ?? ""}
-            onChange={(e) =>
-              setLocalFilters((prev) => ({
-                ...prev,
-                type: e.target.value || null,
-              }))
-            }
-          >
-            <option value="">Any</option>
-            <option value="Fruits">Fruits</option>
-            <option value="Bakery">Bakery</option>
-          </select>
-        </FilterOption>
-        <FilterOption>
-          <label>
-            <input
-              type="checkbox"
-              checked={localFilters.inStock}
-              onChange={(e) =>
-                setLocalFilters((prev) => ({ ...prev, inStock: e.target.checked }))
-              }
-            />
-            In Stock
-          </label>
-        </FilterOption>
-        <div>
-          <FilterButton onClick={() => onApplyFilters(localFilters)}>Apply</FilterButton>
+
+        {/* Cost Section */}
+        <Section>
+          <SectionTitle>Cost</SectionTitle>
+          <SectionOptions>
+            {costOptions.map((cost) => (
+              <CheckboxLabel key={cost}>
+                <CheckboxInput
+                  type="checkbox"
+                  checked={localFilters.cost === cost}
+                  onChange={() => handleCheckboxChange("cost", cost)}
+                />
+                &lt; {cost}
+              </CheckboxLabel>
+            ))}
+          </SectionOptions>
+        </Section>
+
+        {/* Type Section */}
+        <Section>
+          <SectionTitle>Type</SectionTitle>
+          <SectionOptions>
+            {["Fruits", "Bakery", "Beverages"].map((type) => (
+              <CheckboxLabel key={type}>
+                <CheckboxInput
+                  type="checkbox"
+                  checked={localFilters.type === type}
+                  onChange={() => handleCheckboxChange("type", type)}
+                />
+                {type}
+              </CheckboxLabel>
+            ))}
+          </SectionOptions>
+        </Section>
+
+        {/* In-Stock Section */}
+        <Section>
+          <SectionTitle>Availability</SectionTitle>
+          <SectionOptions>
+            <CheckboxLabel>
+              <CheckboxInput
+                type="checkbox"
+                checked={localFilters.inStock}
+                onChange={() =>
+                  handleCheckboxChange("inStock", !localFilters.inStock)
+                }
+              />
+              In Stock
+            </CheckboxLabel>
+          </SectionOptions>
+        </Section>
+
+        {/* Action Buttons */}
+        <FilterButtons>
+          <FilterButton onClick={() => onApplyFilters(localFilters)}>
+            Apply
+          </FilterButton>
           <FilterButton onClick={onClose}>Cancel</FilterButton>
-        </div>
+        </FilterButtons>
       </ModalContent>
     </ModalOverlay>
   );
 };
 
 export default FilterModal;
-

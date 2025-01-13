@@ -7,7 +7,6 @@ import FilterTags from "../components/UserMinimart/FilterTags";
 import SearchBar from "../components/UserMinimart/SearchBar";
 import MockProducts from "../mockDatabase/MockProducts";
 import FilterModal from "../components/UserMinimart/FilterModal";
-import { Filters } from "../definitions/Filters";
 
 const MinimartContainer = styled.div`
   display: flex;
