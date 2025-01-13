@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
-// Styled components
 const ProfilePicture = styled.img`
   width: 50px;
   height: 50px;
@@ -44,38 +44,42 @@ const DropdownMenu = styled.div`
 // Define prop types
 interface ProfileDropdownProps {
   profilePic: string;
-  onOptionClick: (option: string) => void;
 }
 
-const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
-  profilePic,
-  onOptionClick,
-}) => {
+const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ profilePic }) => {
+  const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const toggleDropdown = () => {
     setDropdownOpen((prevState) => !prevState);
   };
 
+  const handleOptionClick = (option: string) => () => {
+    toggleDropdown();
+    switch (option) {
+      case "View Profile":
+        navigate("/profile");
+        break;
+      case "Settings":
+        navigate("/settings");
+        break;
+      case "Log out":
+        navigate("/login");
+        break;
+      default:
+        break;
+    }
+  };
+
   return (
     <div style={{ position: "relative" }}>
-      <ProfilePicture
-        src={profilePic}
-        alt="Profile"
-        onClick={toggleDropdown}
-      />
+      <ProfilePicture src={profilePic} alt="Profile" onClick={toggleDropdown} />
       {dropdownOpen && (
         <DropdownMenu>
           <ul>
-            <li onClick={() => onOptionClick("View Profile")}>
-              View Profile
-            </li>
-            <li onClick={() => onOptionClick("Settings")}>
-              Settings
-            </li>
-            <li onClick={() => onOptionClick("Log Out")}>
-              Log Out
-            </li>
+            <li onClick={handleOptionClick("View Profile")}>View Profile</li>
+            <li onClick={handleOptionClick("Settings")}>Settings</li>
+            <li onClick={handleOptionClick("Log out")}>Log Out</li>
           </ul>
         </DropdownMenu>
       )}
@@ -84,4 +88,3 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
 };
 
 export default ProfileDropdown;
-

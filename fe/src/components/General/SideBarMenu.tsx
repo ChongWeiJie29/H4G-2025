@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 const FloatingButton = styled.button`
   position: fixed;
@@ -29,7 +30,8 @@ const Sidebar = styled.div<{ isOpen: boolean }>`
   width: 250px;
   background-color: #ffffff;
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
-  transform: ${(props) => (props.isOpen ? "translateX(0)" : "translateX(100%)")};
+  transform: ${(props) =>
+    props.isOpen ? "translateX(0)" : "translateX(100%)"};
   transition: transform 0.3s ease-in-out;
   display: flex;
   flex-direction: column;
@@ -60,11 +62,8 @@ const CloseButton = styled.button`
   cursor: pointer;
 `;
 
-interface SidebarMenuProps {
-  onOptionSelect: (option: string) => void;
-}
-
-const SidebarMenu: React.FC<SidebarMenuProps> = ({ onOptionSelect }) => {
+const SidebarMenu = () => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleSidebar = () => {
@@ -72,8 +71,25 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ onOptionSelect }) => {
   };
 
   const handleOptionClick = (option: string) => {
-    onOptionSelect(option);
-    setIsOpen(false); // Close the sidebar after selecting an option
+    setIsOpen(false);
+
+    switch (option) {
+      case "View Transaction History":
+        navigate("/transaction-history");
+        break;
+
+      case "View Voucher Request History":
+        navigate("/voucher-request-history");
+        break;
+      case "Make a Voucher Request":
+        navigate("/voucher-request");
+        break;
+      case "Shop":
+        navigate("/shop");
+        break;
+      default:
+        break;
+    }
   };
 
   return (
@@ -84,7 +100,9 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ onOptionSelect }) => {
         <Option onClick={() => handleOptionClick("View Transaction History")}>
           View Transaction History
         </Option>
-        <Option onClick={() => handleOptionClick("View Voucher Request History")}>
+        <Option
+          onClick={() => handleOptionClick("View Voucher Request History")}
+        >
           View Voucher Request History
         </Option>
         <Option onClick={() => handleOptionClick("Make a Voucher Request")}>
@@ -97,4 +115,3 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ onOptionSelect }) => {
 };
 
 export default SidebarMenu;
-
