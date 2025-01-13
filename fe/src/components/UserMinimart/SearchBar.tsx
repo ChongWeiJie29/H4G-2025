@@ -7,7 +7,7 @@ const SearchContainer = styled.div`
   background: white;
   border-radius: 8px;
   padding: 4px 8px;
-  flex: 0.5;
+  flex: 1;
   border: 1px solid #ccc;
 `;
 
