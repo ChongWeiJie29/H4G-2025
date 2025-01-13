@@ -32,15 +32,6 @@ const CardContainer = styled.div`
 `;
 
 const UserDashboard = () => {
-  const handleProfileOptionClick = (option: string) => {
-    // replace with page navigation later on
-    console.log(option);
-  };
-  const handleSidebarOptionClick = (option: string) => {
-    // replace with page navigation later on
-    console.log(option);
-  };
-
   return (
     <DashboardContainer>
       <DashboardHeader>
@@ -51,7 +42,6 @@ const UserDashboard = () => {
         ></img>
         <ProfileDropdown
           profilePic="/images/profile-user.png"
-          onOptionClick={handleProfileOptionClick}
         />
       </DashboardHeader>
       <DashboardBody>
@@ -62,7 +52,7 @@ const UserDashboard = () => {
         </CardContainer>
         <AvailableProductsCard />
       </DashboardBody>
-      <SidebarMenu onOptionSelect={handleSidebarOptionClick} />
+      <SidebarMenu />
     </DashboardContainer>
   );
 };

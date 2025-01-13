@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-// Styled components
 const ProfilePicture = styled.img`
   width: 50px;
   height: 50px;
@@ -44,17 +43,20 @@ const DropdownMenu = styled.div`
 // Define prop types
 interface ProfileDropdownProps {
   profilePic: string;
-  onOptionClick: (option: string) => void;
 }
 
 const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
   profilePic,
-  onOptionClick,
 }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const toggleDropdown = () => {
     setDropdownOpen((prevState) => !prevState);
+  };
+
+  const handleOptionClick = (option: string) => () => {
+    toggleDropdown();
+    console.log(option);
   };
 
   return (
@@ -67,13 +69,13 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
       {dropdownOpen && (
         <DropdownMenu>
           <ul>
-            <li onClick={() => onOptionClick("View Profile")}>
+            <li onClick={handleOptionClick("View Profile")}>
               View Profile
             </li>
-            <li onClick={() => onOptionClick("Settings")}>
+            <li onClick={handleOptionClick("Settings")}>
               Settings
             </li>
-            <li onClick={() => onOptionClick("Log Out")}>
+            <li onClick={handleOptionClick("Log out")}>
               Log Out
             </li>
           </ul>
