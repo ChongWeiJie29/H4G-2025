@@ -6,6 +6,8 @@ import ProductCard from "../components/UserMinimart/ProductCard";
 import FilterTags from "../components/UserMinimart/FilterTags";
 import SearchBar from "../components/UserMinimart/SearchBar";
 import MockProducts from "../mockDatabase/MockProducts";
+import FilterModal from "../components/UserMinimart/FilterModal";
+import { Filters } from "../definitions/Filters";
 
 const MinimartContainer = styled.div`
   display: flex;
@@ -29,16 +31,6 @@ const SearchAndFilters = styled.div`
   margin-bottom: 16px;
 `;
 
-const VoucherButton = styled.button`
-  background: #fff;
-  border: none;
-  border-radius: 4px;
-  padding: 8px 16px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-`;
-
 const ProductGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -47,16 +39,45 @@ const ProductGrid = styled.div`
   flex: 1;
 `;
 
+const FilterButton = styled.button`
+  background: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+`;
+
 const UserMinimart: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [products] = useState(MockProducts);
+  const [filters, setFilters] = useState({
+    cost: null as number | null,
+    type: null as string | null,
+    inStock: false,
+  });
+  const [isFilterModalOpen, setFilterModalOpen] = useState(false);
 
-  // filter products based on search query
-  const filteredProducts = products.filter(
-    (product) =>
+  // filter products based on search query and filters
+  const filteredProducts = products.filter((product) => {
+    const matchesSearch =
       product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      product.description.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
+      product.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCost =
+      filters.cost === null || product.unitCost <= filters.cost;
+    const matchesType =
+      filters.type === null || product.category === filters.type;
+    const matchesStock = !filters.inStock || product.quantityAvailable > 0;
+
+    return matchesSearch && matchesCost && matchesType && matchesStock;
+  });
+
+  // Remove individual filters
+  const removeFilter = (key: keyof typeof filters) => {
+    setFilters((prev) => ({
+      ...prev,
+      [key]: key === "inStock" ? false : null,
+    }));
+  };
 
   return (
     <MinimartContainer>
@@ -64,12 +85,11 @@ const UserMinimart: React.FC = () => {
       <MinimartBody>
         <SearchAndFilters>
           <SearchBar query={searchQuery} onSearchChange={setSearchQuery} />
-          <VoucherButton>
-            <span style={{ marginRight: "8px" }}>💳</span>
-            Voucher amount
-          </VoucherButton>
+          <FilterButton onClick={() => setFilterModalOpen(true)}>
+            Filters
+          </FilterButton>
         </SearchAndFilters>
-        <FilterTags />
+        <FilterTags filters={filters} onRemoveFilter={removeFilter} />
         <ProductGrid>
           {filteredProducts.map((product, index) => (
             <ProductCard key={index} product={product} />
@@ -77,6 +97,16 @@ const UserMinimart: React.FC = () => {
         </ProductGrid>
       </MinimartBody>
       <SideBarMenu />
+      {isFilterModalOpen && (
+        <FilterModal
+          filters={filters}
+          onApplyFilters={(newFilters) => {
+            setFilters(newFilters);
+            setFilterModalOpen(false);
+          }}
+          onClose={() => setFilterModalOpen(false)}
+        />
+      )}
     </MinimartContainer>
   );
 };
