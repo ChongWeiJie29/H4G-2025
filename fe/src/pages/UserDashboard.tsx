@@ -8,7 +8,7 @@ import MockUser from "../mockDatabase/MockUser";
 import UserPageHeader from "../components/General/UserPageHeader";
 
 const DashboardContainer = styled.div`
-  max-width: 1200px;
+  max-width: 80vw;
   margin: 0 auto;
   padding: 20px;
 `;
