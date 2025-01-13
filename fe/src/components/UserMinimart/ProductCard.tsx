@@ -73,7 +73,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <ProductDescription>{product.description}</ProductDescription>
         <ProductFooter>
           <QuantityLeft>Qty: {product.quantityAvailable}</QuantityLeft>
-          <UnitCost>${product.unitCost.toFixed(2)}</UnitCost>
+          <UnitCost>{product.unitCost} 💳</UnitCost>
         </ProductFooter>
       </ProductDetails>
     </CardContainer>
