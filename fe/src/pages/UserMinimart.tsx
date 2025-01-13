@@ -5,6 +5,7 @@ import SideBarMenu from "../components/General/SideBarMenu";
 import ProductCard from "../components/UserMinimart/ProductCard";
 import FilterTags from "../components/UserMinimart/FilterTags";
 import SearchBar from "../components/UserMinimart/SearchBar";
+import MockProducts from "../mockDatabase/MockProducts";
 
 const MinimartContainer = styled.div`
   display: flex;
@@ -60,12 +61,9 @@ const UserMinimart: React.FC = () => {
         </SearchAndFilters>
         <FilterTags />
         <ProductGrid>
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
+          {MockProducts.map((product, index) => (
+            <ProductCard key={index} product={product} />
+          ))}
         </ProductGrid>
       </MinimartBody>
       <SideBarMenu />
@@ -74,4 +72,3 @@ const UserMinimart: React.FC = () => {
 };
 
 export default UserMinimart;
-
