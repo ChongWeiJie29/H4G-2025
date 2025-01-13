@@ -55,7 +55,7 @@ interface CartFooterProps {
 const CartFooter: React.FC<CartFooterProps> = ({ totalCost, onClearCart }) => {
   return (
     <FooterWrapper>
-      <TotalCostText>Total cost: ${totalCost.toFixed(2)} 💳</TotalCostText>
+      <TotalCostText>Total cost: {totalCost.toFixed(2)} 💳</TotalCostText>
       <ButtonSection>
         <ClearCartButton onClick={onClearCart}>Clear Cart</ClearCartButton>
         <ConfirmPurchaseButton>Confirm Purchase</ConfirmPurchaseButton>
