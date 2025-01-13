@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 const Card = styled.div`
   width: 400px;
@@ -28,7 +29,7 @@ const Input = styled.input`
   border: 1px solid #cccccc;
   border-radius: 5px;
   outline: none;
-  box-sizing: border-box; /* Ensures padding and border are included in the width */
+  box-sizing: border-box;
   &:focus {
     border-color: #ffa500;
     box-shadow: 0 0 4px #ffa500;
@@ -64,15 +65,20 @@ const InputContainer = styled.div`
   position: relative;
 `;
 
-const EyeIcon = styled.span`
+const EyeIcon = styled.img`
   position: absolute;
   top: 50%;
   right: 10px;
   transform: translateY(-50%);
   cursor: pointer;
+  width: 20px;
+  height: 20px;
 `;
 
 const LoginCard: React.FC = () => {
+  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
     <Card>
       <Title>Sign in</Title>
@@ -80,11 +86,18 @@ const LoginCard: React.FC = () => {
         <Input type="text" placeholder="Username" />
       </InputContainer>
       <InputContainer>
-        <Input type="password" placeholder="Password" />
-        <EyeIcon>👁️</EyeIcon>
+        <Input
+          type={showPassword ? "text" : "password"}
+          placeholder="Password"
+        />
+        <EyeIcon
+          src={showPassword ? "/images/show.png" : "/images/hide.png"}
+          alt="Toggle password visibility"
+          onClick={() => setShowPassword((prev) => !prev)}
+        />
       </InputContainer>
       <ForgotPasswordLink href="#">Forgot your password?</ForgotPasswordLink>
-      <Button>Sign in</Button>
+      <Button onClick={() => navigate("/")}>Sign in</Button>
     </Card>
   );
 };
