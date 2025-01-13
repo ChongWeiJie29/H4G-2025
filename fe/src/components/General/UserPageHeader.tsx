@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import ProfileDropdown from "./ProfileDropdown";
+import { useNavigate } from "react-router-dom";
 
 const Header = styled.header`
   display: flex;
@@ -9,12 +10,15 @@ const Header = styled.header`
 `;
 
 const UserPageHeader = () => {
+
+    const navigate = useNavigate();
   return (
     <Header>
       <img
         src="/images/company_logo_small.png"
         alt="company_logo"
         height="80"
+        onClick={() => navigate("/")}
       ></img>
       <ProfileDropdown profilePic="/images/profile-user.png" />
     </Header>

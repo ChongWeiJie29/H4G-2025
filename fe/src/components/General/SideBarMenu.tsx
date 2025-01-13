@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 const FloatingButton = styled.button`
   position: fixed;
@@ -62,6 +63,7 @@ const CloseButton = styled.button`
 `;
 
 const SidebarMenu = () => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleSidebar = () => {
@@ -70,7 +72,24 @@ const SidebarMenu = () => {
 
   const handleOptionClick = (option: string) => {
     setIsOpen(false);
-    console.log(option);
+
+    switch (option) {
+      case "View Transaction History":
+        navigate("/transaction-history");
+        break;
+
+      case "View Voucher Request History":
+        navigate("/voucher-request-history");
+        break;
+      case "Make a Voucher Request":
+        navigate("/voucher-request");
+        break;
+      case "Shop":
+        navigate("/shop");
+        break;
+      default:
+        break;
+    }
   };
 
   return (

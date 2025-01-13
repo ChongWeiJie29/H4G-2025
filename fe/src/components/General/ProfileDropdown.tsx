@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 const ProfilePicture = styled.img`
   width: 50px;
@@ -45,9 +46,8 @@ interface ProfileDropdownProps {
   profilePic: string;
 }
 
-const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
-  profilePic,
-}) => {
+const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ profilePic }) => {
+  const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const toggleDropdown = () => {
@@ -56,28 +56,30 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
 
   const handleOptionClick = (option: string) => () => {
     toggleDropdown();
-    console.log(option);
+    switch (option) {
+      case "View Profile":
+        navigate("/profile");
+        break;
+      case "Settings":
+        navigate("/settings");
+        break;
+      case "Log out":
+        navigate("/login");
+        break;
+      default:
+        break;
+    }
   };
 
   return (
     <div style={{ position: "relative" }}>
-      <ProfilePicture
-        src={profilePic}
-        alt="Profile"
-        onClick={toggleDropdown}
-      />
+      <ProfilePicture src={profilePic} alt="Profile" onClick={toggleDropdown} />
       {dropdownOpen && (
         <DropdownMenu>
           <ul>
-            <li onClick={handleOptionClick("View Profile")}>
-              View Profile
-            </li>
-            <li onClick={handleOptionClick("Settings")}>
-              Settings
-            </li>
-            <li onClick={handleOptionClick("Log out")}>
-              Log Out
-            </li>
+            <li onClick={handleOptionClick("View Profile")}>View Profile</li>
+            <li onClick={handleOptionClick("Settings")}>Settings</li>
+            <li onClick={handleOptionClick("Log out")}>Log Out</li>
           </ul>
         </DropdownMenu>
       )}
@@ -86,4 +88,3 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
 };
 
 export default ProfileDropdown;
-
