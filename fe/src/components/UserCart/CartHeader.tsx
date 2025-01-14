@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 const Header = styled.div`
   display: flex;
@@ -29,17 +30,43 @@ const ClearCartButton = styled.button`
   }
 `;
 
+const BackToShop = styled.button`
+  background: #fff;
+  border: 2px solid #aaa;
+  border-radius: 8px;
+  padding: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  align-self: flex-start;
+
+  &:hover {
+    background-color: #ccc;
+  }
+`;
+
+const Buttons = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+`;
+
 interface CartHeaderProps {
     itemCount: number;
     onClearCart: () => void;
 }
 
-const CartHeader: React.FC<CartHeaderProps> = ({ itemCount,  onClearCart }) => {
+const CartHeader: React.FC<CartHeaderProps> = ({ itemCount, onClearCart }) => {
+    const navigate = useNavigate();
     return (
         <Header>
             <HeaderText>Items in cart: {itemCount}</HeaderText>
-
-            <ClearCartButton onClick={onClearCart}>Clear Cart</ClearCartButton>
+            <Buttons>
+                <BackToShop onClick={() => navigate("/shop")}>
+                    <img src="images/shopping-bag.png" alt="bag" width="35" />
+                </BackToShop>
+                <ClearCartButton onClick={onClearCart}>Clear Cart</ClearCartButton>
+            </Buttons>
         </Header>
     );
 };

@@ -7,7 +7,6 @@ import CartHeader from "../components/UserCart/CartHeader";
 import CartFooter from "../components/UserCart/CartFooter";
 import { useQuery } from "@apollo/client";
 import { GET_USER } from "../gql/ops";
-import { useNavigate } from "react-router-dom";
 import { useCart } from "../components/General/CartContext";
 import ConfirmationModal from "../components/General/ConfirmationModal";
 
@@ -22,22 +21,7 @@ const CartPageContainer = styled.div`
   position: relative;
 `;
 
-const BackToShop = styled.button`
-  background-color: #ddd;
-  border: black 1px solid;
-  border-radius: 4px;
-  padding: 10px 20px;
-  font-size: 14px;
-  cursor: pointer;
-  width: 150px;
-
-  &:hover {
-    background-color: #ccc;
-  }
-`;
-
 const CartPage: React.FC = () => {
-  const navigate = useNavigate();
   const { cartItems, clearCart, totalCost } = useCart();
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -63,7 +47,6 @@ const CartPage: React.FC = () => {
   return (
     <CartPageContainer>
       <UserPageHeader user={user} />
-      <BackToShop onClick={() => navigate("/shop")}>Back to Shop</BackToShop>
       <CartHeader itemCount={cartItems.length} onClearCart={handleClearCart} />
       <CartItemsContainer cartItems={cartItems} />
       <CartFooter totalCost={totalCost} userVoucherAmount={user.voucher}/>
