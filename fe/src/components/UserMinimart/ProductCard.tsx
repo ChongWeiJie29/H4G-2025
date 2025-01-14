@@ -3,14 +3,28 @@ import styled from "styled-components";
 import { Product } from "../../definitions/Product";
 import { useCart } from "../General/CartContext";
 
-const CardContainer = styled.div`
+const CardContainer = styled.div<{ isClicked: boolean }>`
+  position: relative;
   background: white;
-  border: 1px solid #ccc;
+  border: 1px solid ${({ isClicked }) => (isClicked ? "#4caf50" : "#ccc")};
   border-radius: 8px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   height: 100%;
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: scale(1.02);
+    cursor: pointer;
+  }
+
+  &:active {
+    border-color: #4caf50;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transform: scale(0.98);
+  }
 `;
 
 const ProductImage = styled.img`
@@ -69,8 +83,10 @@ const UnitCost = styled.div`
 
 const Notification = styled.div`
   position: absolute;
+  width: 70%;
   top: 10px;
-  right: 10px;
+  left: 50%;
+  transform: translateX(-50%);
   background: #4caf50;
   color: white;
   padding: 8px 16px;
@@ -92,6 +108,7 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [notification, setNotification] = useState(false);
+  const [isClicked, setIsClicked] = useState(false);
   const { addToCart } = useCart();
 
   const handleAddToCart = () => {
@@ -99,10 +116,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
     setNotification(true);
     setTimeout(() => setNotification(false), 2000);
+
+    setIsClicked(true);
+    setTimeout(() => setIsClicked(false), 200);
   };
 
   return (
-    <CardContainer onClick={handleAddToCart}>
+    <CardContainer isClicked={isClicked} onClick={handleAddToCart}>
       <ProductImage src={product.link} alt={product.name} />
       <ProductDetails>
         <ProductName>{product.name}</ProductName>
