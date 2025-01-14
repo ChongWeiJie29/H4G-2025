@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import UserPageHeader from "../components/General/UserPageHeader";
 import SideBarMenu from "../components/General/SideBarMenu";
@@ -9,6 +9,7 @@ import { useQuery } from "@apollo/client";
 import { GET_USER } from "../gql/ops";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../components/General/CartContext";
+import ConfirmationModal from "../components/General/ConfirmationModal";
 
 const CartPageContainer = styled.div`
   display: flex;
@@ -38,6 +39,7 @@ const BackToShop = styled.button`
 const CartPage: React.FC = () => {
   const navigate = useNavigate();
   const { cartItems, clearCart, totalCost } = useCart();
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const { loading, error, data } = useQuery(GET_USER, {});
 
@@ -45,14 +47,34 @@ const CartPage: React.FC = () => {
   if (error) return <p>Error : {error.message}</p>;
   const user = data.getUser;
 
+  const handleClearCart = () => {
+    setIsModalVisible(true); // Show confirmation modal
+  };
+
+  const confirmClearCart = () => {
+    clearCart(); // Clear the cart
+    setIsModalVisible(false); // Close the modal
+  };
+
+  const cancelClearCart = () => {
+    setIsModalVisible(false); // Close the modal without clearing
+  };
+
   return (
     <CartPageContainer>
       <UserPageHeader user={user} />
       <BackToShop onClick={() => navigate("/shop")}>Back to Shop</BackToShop>
-      <CartHeader itemCount={cartItems.length} onClearCart={clearCart} />
+      <CartHeader itemCount={cartItems.length} onClearCart={handleClearCart} />
       <CartItemsContainer cartItems={cartItems} />
       <CartFooter totalCost={totalCost} />
       <SideBarMenu />
+      {isModalVisible && (
+        <ConfirmationModal
+          modalContent="Are you sure you want to clear the cart?"
+          onClickYes={confirmClearCart}
+          onClickNo={cancelClearCart}
+        />
+      )}
     </CartPageContainer>
   );
 };
