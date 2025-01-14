@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Product } from "../../definitions/Product";
-import { CartItem } from "../../definitions/CartItem";
+import { useCart } from "../General/CartContext";
 
 const CardContainer = styled.div`
   background: white;
@@ -92,17 +92,10 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [notification, setNotification] = useState(false);
+  const { addToCart } = useCart();
 
   const handleAddToCart = () => {
-    const existingCart = JSON.parse(localStorage.getItem("shoppingCart") || "[]") as CartItem[];
-    const existingItem = existingCart.find((item) => item.product.name === product.name);
-
-    if (existingItem) {
-      existingItem.quantity += 1;
-    } else {
-      existingCart.push({ product, quantity: 1 });
-    }
-    localStorage.setItem("shoppingCart", JSON.stringify(existingCart));
+    addToCart(product);
 
     setNotification(true);
     setTimeout(() => setNotification(false), 2000);
