@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import UserPageHeader from "../components/General/UserPageHeader";
 import SideBarMenu from "../components/General/SideBarMenu";
-import MockCart from "../mockDatabase/MockCart";
 import CartItemsContainer from "../components/UserCart/CartItemsContainer";
 import CartHeader from "../components/UserCart/CartHeader";
 import CartFooter from "../components/UserCart/CartFooter";
 import { useQuery } from "@apollo/client";
 import { GET_USER } from "../gql/ops";
+import { useCart } from "../components/General/CartContext";
+import ConfirmationModal from "../components/General/ConfirmationModal";
 
 const CartPageContainer = styled.div`
   display: flex;
@@ -21,18 +22,8 @@ const CartPageContainer = styled.div`
 `;
 
 const CartPage: React.FC = () => {
-  const [cartItems, setCartItems] = useState(MockCart);
-
-  const calculateTotalCost = () => {
-    return cartItems.reduce(
-      (total, item) => total + item.product.price * item.quantity,
-      0,
-    );
-  };
-
-  const handleClearCart = () => {
-    setCartItems([]);
-  };
+  const { cartItems, clearCart, totalCost } = useCart();
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const { loading, error, data } = useQuery(GET_USER, {});
 
@@ -40,18 +31,36 @@ const CartPage: React.FC = () => {
   if (error) return <p>Error : {error.message}</p>;
   const user = data.getUser;
 
+  const handleClearCart = () => {
+    setIsModalVisible(true);
+  };
+
+  const confirmClearCart = () => {
+    clearCart();
+    setIsModalVisible(false);
+  };
+
+  const cancelClearCart = () => {
+    setIsModalVisible(false);
+  };
+
   return (
     <CartPageContainer>
       <UserPageHeader user={user} />
-      <CartHeader itemCount={cartItems.length} />
+      <CartHeader itemCount={cartItems.length} onClearCart={handleClearCart} />
       <CartItemsContainer cartItems={cartItems} />
-      <CartFooter
-        totalCost={calculateTotalCost()}
-        onClearCart={handleClearCart}
-      />
+      <CartFooter totalCost={totalCost} userVoucherAmount={user.voucher}/>
       <SideBarMenu />
+      {isModalVisible && (
+        <ConfirmationModal
+          modalContent="Are you sure you want to clear the cart?"
+          onClickYes={confirmClearCart}
+          onClickNo={cancelClearCart}
+        />
+      )}
     </CartPageContainer>
   );
 };
 
 export default CartPage;
+
