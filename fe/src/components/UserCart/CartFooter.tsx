@@ -18,25 +18,6 @@ const TotalCostText = styled.div`
   color: black;
 `;
 
-const ButtonSection = styled.div`
-  display: flex;
-  gap: 10px;
-`;
-
-const ClearCartButton = styled.button`
-  background-color: red;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 10px 20px;
-  font-size: 14px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #ff6666;
-  }
-`;
-
 const ConfirmPurchaseButton = styled.button`
   background-color: black;
   color: white;
@@ -53,10 +34,9 @@ const ConfirmPurchaseButton = styled.button`
 
 interface CartFooterProps {
   totalCost: number;
-  onClearCart: () => void;
 }
 
-const CartFooter: React.FC<CartFooterProps> = ({ totalCost, onClearCart }) => {
+const CartFooter: React.FC<CartFooterProps> = ({ totalCost }) => {
   const [showError, setShowError] = useState(true);
 
   /** yo */
@@ -78,10 +58,7 @@ const CartFooter: React.FC<CartFooterProps> = ({ totalCost, onClearCart }) => {
         <ErrorModal error={error} close={handleCloseError} />
       )}
       <TotalCostText>Total cost: {totalCost} 💳</TotalCostText>
-      <ButtonSection>
-        <ClearCartButton onClick={onClearCart}>Clear Cart</ClearCartButton>
-        <ConfirmPurchaseButton onClick={handleOnClick}>Confirm Purchase</ConfirmPurchaseButton>
-      </ButtonSection>
+      <ConfirmPurchaseButton onClick={handleOnClick}>Confirm Purchase</ConfirmPurchaseButton>
     </FooterWrapper>
   );
 };
