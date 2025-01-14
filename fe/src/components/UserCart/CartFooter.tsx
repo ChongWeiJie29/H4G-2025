@@ -57,6 +57,7 @@ const CartFooter: React.FC<CartFooterProps> = ({ totalCost, userVoucherAmount })
   const handleCloseError = () => setShowError(false);
 
   const hasInsufficientVouchers = totalCost > userVoucherAmount;
+  const cartEmpty = totalCost === 0;
 
   return (
     <FooterWrapper>
@@ -67,7 +68,7 @@ const CartFooter: React.FC<CartFooterProps> = ({ totalCost, userVoucherAmount })
       )}
       <ConfirmPurchaseButton
         onClick={handleOnClick}
-        disabled={hasInsufficientVouchers}
+        disabled={hasInsufficientVouchers || cartEmpty}
       >
         Confirm Purchase
       </ConfirmPurchaseButton>
