@@ -39,3 +39,36 @@ export const GET_ALL_PRODUCTS = gql`
     }
   }
 `;
+
+export const CONFIRM_SHOPPING_CART = gql`
+  mutation confirmShoppingCart ($shoppingCart: [ShoppingCartItem!]!) {
+    confirmShoppingCart (shoppingCart: $shoppingCart) {
+      message
+    }
+  }
+`;
+
+export const CREATE_VOUCHER = gql`
+  mutation createVoucher ($voucher: CreateVoucherInput!) {
+    createVoucher (voucher: $voucher) {
+      message
+    }
+  }
+`;
+
+export const GET_PENDING_VOUCHERS = gql`
+  query getPendingVouchers {
+    getPendingVouchers {
+      message
+      vouchers {
+          voucher_id
+          amount
+          task
+          status
+          request_time
+          response_time
+      }
+      vouchersCount
+    }
+  }
+`;

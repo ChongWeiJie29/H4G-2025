@@ -26,11 +26,11 @@ const CarouselWrapper = styled.div`
   position: relative;
 `;
 
-const Carousel = styled.div<{ translateX: number }>`
+const Carousel = styled.div<{ translatex: number }>`
   display: flex;
   transition: transform 0.5s ease;
-  transform: ${(props: { translateX: number }) =>
-    `translateX(-${props.translateX}%)`};
+  transform: ${(props: { translatex: number }) =>
+    `translateX(-${props.translatex}%)`};
 `;
 
 const CarouselCard = styled.div`
@@ -117,7 +117,7 @@ const AvailableProductsCard: React.FC = () => {
     <WideCard>
       <h2>{productsCount} Available Products</h2>
       <CarouselWrapper>
-        <Carousel translateX={currentIndex * 100}>
+        <Carousel translatex={currentIndex * 100}>
           {products.map((product, index) => (
             <CarouselCard key={index}>
               <Item>

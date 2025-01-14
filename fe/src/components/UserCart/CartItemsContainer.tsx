@@ -98,14 +98,14 @@ const CartItemsContainer: React.FC<CartItemsContainerProps> = ({
     <CartItemsWrapper>
       {cartItems.map((item, index) => (
         <CartItemCard key={index}>
-          <ProductImage src={item.product.image} alt={item.product.name} />
+          <ProductImage src={item.product.link} alt={item.product.name} />
           <ProductDetails>
             <ItemLabel>Item Name:</ItemLabel>
             <ItemValue>{item.product.name}</ItemValue>
           </ProductDetails>
           <ProductDetails>
             <ItemLabel>Unit Cost:</ItemLabel>
-            <ItemValue>{item.product.unitCost} 💳</ItemValue>
+            <ItemValue>{item.product.price} 💳</ItemValue>
           </ProductDetails>
           <QuantityContainer>
             <QuantityButton

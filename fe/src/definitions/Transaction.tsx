@@ -1,7 +1,16 @@
+export enum RequestType {
+  pending = 'pending',
+  accepted = 'accepted',
+  rejected = 'rejected',
+};
+
 export interface Transaction {
-  id: number;
-  type: "in" | "out"; // "in" for incoming, "out" for outgoing
-  amount: number;
-  date: string; // Transaction date as a string (e.g., ISO 8601 format)
-  description: string;
+  request_id: number
+  status: RequestType;
+  name: string;
+  product: string;
+  price: number;
+  quantity: number;
+  request_time: Date;
+  response_time: Date;
 }

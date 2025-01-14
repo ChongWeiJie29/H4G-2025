@@ -90,6 +90,7 @@ const LoginCard: React.FC = () => {
   
   const onSignIn = () => {
     setShowError(true);
+    console.log(error);
     authUser({
       variables: { user: { name, password } }
     });
