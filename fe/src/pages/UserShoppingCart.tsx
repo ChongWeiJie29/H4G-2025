@@ -6,6 +6,8 @@ import MockCart from "../mockDatabase/MockCart";
 import CartItemsContainer from "../components/UserCart/CartItemsContainer";
 import CartHeader from "../components/UserCart/CartHeader";
 import CartFooter from "../components/UserCart/CartFooter";
+import { useQuery } from "@apollo/client";
+import { GET_USER } from "../gql/ops";
 
 const CartPageContainer = styled.div`
   display: flex;
@@ -23,7 +25,7 @@ const CartPage: React.FC = () => {
 
   const calculateTotalCost = () => {
     return cartItems.reduce(
-      (total, item) => total + item.product.unitCost * item.quantity,
+      (total, item) => total + item.product.price * item.quantity,
       0,
     );
   };
@@ -32,9 +34,15 @@ const CartPage: React.FC = () => {
     setCartItems([]);
   };
 
+  const { loading, error, data } = useQuery(GET_USER, {});
+
+  if (loading) return <p>Loading ...</p>;
+  if (error) return <p>Error : {error.message}</p>;
+  const user = data.getUser;
+
   return (
     <CartPageContainer>
-      <UserPageHeader />
+      <UserPageHeader user={user} />
       <CartHeader itemCount={cartItems.length} />
       <CartItemsContainer cartItems={cartItems} />
       <CartFooter

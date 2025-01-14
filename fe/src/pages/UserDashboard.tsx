@@ -1,11 +1,13 @@
 import styled from "styled-components";
-import VoucherBalanceCard from "../components/UserDashboard/VoucherBalanceCard";
 import RecentTransactionsCard from "../components/UserDashboard/RecentTransactionsCard";
 import NotificationsCard from "../components/UserDashboard/NotificationsCard";
 import AvailableProductsCard from "../components/UserDashboard/AvailableProductsCard";
 import SidebarMenu from "../components/General/SideBarMenu";
-import MockUser from "../mockDatabase/MockUser";
 import UserPageHeader from "../components/General/UserPageHeader";
+import { useQuery } from '@apollo/client';
+import { GET_USER } from "../gql/ops";
+import ErrorModal from "../components/General/ErrorModal";
+import { useState } from "react";
 
 const DashboardContainer = styled.div`
   max-width: 80vw;
@@ -25,12 +27,22 @@ const CardContainer = styled.div`
 `;
 
 const UserDashboard = () => {
+  const [showError, setShowError] = useState(true);
+  const { loading, error, data } = useQuery(GET_USER, {});
+
+  if (loading) return <p>Loading ...</p>;
+  const user = !error && data.getUser;
+
+  const handleCloseError = () => setShowError(false);
+
   return (
     <DashboardContainer>
-      <UserPageHeader />
+      {error && showError && (
+        <ErrorModal error={error} close={handleCloseError} />
+      )}
+      <UserPageHeader user={user} />
       <DashboardBody>
         <CardContainer>
-          <VoucherBalanceCard voucherAmount={MockUser.voucherAmount} />
           <RecentTransactionsCard />
           <NotificationsCard />
         </CardContainer>

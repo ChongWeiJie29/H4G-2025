@@ -5,10 +5,13 @@ import SideBarMenu from "../components/General/SideBarMenu";
 import ProductCard from "../components/UserMinimart/ProductCard";
 import FilterTags from "../components/UserMinimart/FilterTags";
 import SearchBar from "../components/UserMinimart/SearchBar";
-import MockProducts from "../mockDatabase/MockProducts";
 import FilterModal from "../components/UserMinimart/FilterModal";
-import MockUser from "../mockDatabase/MockUser";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@apollo/client";
+import { GET_ALL_PRODUCTS, GET_USER } from "../gql/ops";
+import { User } from "../definitions/User";
+import { Product } from "../definitions/Product";
+import ErrorModal from "../components/General/ErrorModal";
 
 const MinimartContainer = styled.div`
   display: flex;
@@ -52,7 +55,7 @@ const VoucherDisplay = styled.button`
   background: #ffffff;
   border: 1px solid #ccc;
   border-radius: 8px;
-  padding: 0px 4rem;
+  padding: 0px 2rem;
   display: flex;
   align-items: center;
   gap: 0 0.3rem;
@@ -80,14 +83,40 @@ const ShoppingCartButton = styled.button`
 `;
 
 const UserMinimart: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [products] = useState(MockProducts);
+  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const [filters, setFilters] = useState({
     cost: null as number | null,
     type: null as string | null,
     inStock: false,
   });
   const [isFilterModalOpen, setFilterModalOpen] = useState(false);
+  const [showError, setShowError] = useState(true);
+
+  const handleCloseError = () => setShowError(false);
+
+  let {
+    loading: productLoading,
+    error: productError,
+    data: productData,
+  } = useQuery(GET_ALL_PRODUCTS, {});
+
+  let {
+    loading: userLoading,
+    error: userError,
+    data: userData,
+  } = useQuery(GET_USER, {});
+
+  if (userLoading || productLoading) return <p>Loading ...</p>;
+  let error;
+  if (userError) {
+    error = userError;
+  } else if (productError) {
+    error = productError;
+  }
+
+  const products: Product[] = !error ? productData.getAllAvailableProducts.products : [];
+  const user: User = !error && userData.getUser;
 
   // filter products based on search query and filters
   const filteredProducts = products.filter((product) => {
@@ -95,10 +124,10 @@ const UserMinimart: React.FC = () => {
       product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       product.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCost =
-      filters.cost === null || product.unitCost <= filters.cost;
+      filters.cost === null || product.price <= filters.cost;
     const matchesType =
-      filters.type === null || product.category === filters.type;
-    const matchesStock = !filters.inStock || product.quantityAvailable > 0;
+      filters.type === null || product.tag === filters.type;
+    const matchesStock = !filters.inStock || product.quantity > 0;
 
     return matchesSearch && matchesCost && matchesType && matchesStock;
   });
@@ -111,11 +140,12 @@ const UserMinimart: React.FC = () => {
     }));
   };
 
-  const navigate = useNavigate();
-
   return (
     <MinimartContainer>
-      <UserPageHeader />
+      {(productError || userError) && showError && (
+        <ErrorModal error={error} close={handleCloseError} />
+      )}
+      <UserPageHeader user={user} />
       <MinimartBody>
         <Toolbar>
           <SearchBarAndFilter>
@@ -125,8 +155,7 @@ const UserMinimart: React.FC = () => {
             </FilterButton>
           </SearchBarAndFilter>
           <VoucherDisplay>
-            <p>You have: {MockUser.voucherAmount}</p>
-            <span style={{ marginRight: "8px" }}>💳</span>
+            <p>You have: {user.voucher} 💳</p>
           </VoucherDisplay>
           <ShoppingCartButton>
             <img

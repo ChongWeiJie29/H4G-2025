@@ -67,13 +67,13 @@ interface ProductCardProps {
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   return (
     <CardContainer>
-      <ProductImage src={product.image} alt={product.name} />
+      <ProductImage src={product.link} alt={product.name} />
       <ProductDetails>
-        <CategoryTag>{product.category}</CategoryTag>
+        <CategoryTag>{product.tag}</CategoryTag>
         <ProductDescription>{product.description}</ProductDescription>
         <ProductFooter>
-          <QuantityLeft>Qty: {product.quantityAvailable}</QuantityLeft>
-          <UnitCost>{product.unitCost} 💳</UnitCost>
+          <QuantityLeft>Qty: {product.quantity}</QuantityLeft>
+          <UnitCost>{product.price} 💳</UnitCost>
         </ProductFooter>
       </ProductDetails>
     </CardContainer>

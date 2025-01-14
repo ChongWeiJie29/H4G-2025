@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { useLazyQuery } from "@apollo/client";
+import { AUTHENTICATE_USER } from "../../gql/ops";
+import ErrorModal from "../General/ErrorModal";
 
 const Card = styled.div`
   width: 400px;
@@ -77,19 +80,39 @@ const EyeIcon = styled.img`
 
 const LoginCard: React.FC = () => {
   const navigate = useNavigate();
+  const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showError, setShowError] = useState(true);
+
+  const [authUser, { loading, error, data }] = useLazyQuery(AUTHENTICATE_USER);
+  if (loading) return <p>Loading ...</p>;
+  
+  const onSignIn = () => {
+    setShowError(true);
+    authUser({
+      variables: { user: { name, password } }
+    });
+  }
+
+  if (!error && data) {
+    sessionStorage.setItem("token", data.authenticateUser.token);
+    navigate("/dashboard");
+  }
+
+  const handleCloseError = () => setShowError(false);
 
   return (
     <Card>
+      {error && showError && (
+        <ErrorModal error={error} close={handleCloseError} />
+      )}
       <Title>Sign in</Title>
       <InputContainer>
-        <Input type="text" placeholder="Username" />
+        <Input type="text" placeholder="Username" value={name} onChange={(e) => setName(e.target.value)} />
       </InputContainer>
       <InputContainer>
-        <Input
-          type={showPassword ? "text" : "password"}
-          placeholder="Password"
-        />
+        <Input type={showPassword ? "text" : "password"} placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
         <EyeIcon
           src={showPassword ? "/images/show.png" : "/images/hide.png"}
           alt="Toggle password visibility"
@@ -97,7 +120,7 @@ const LoginCard: React.FC = () => {
         />
       </InputContainer>
       <ForgotPasswordLink href="#">Forgot your password?</ForgotPasswordLink>
-      <Button onClick={() => navigate("/")}>Sign in</Button>
+      <Button onClick={onSignIn}>Sign in</Button>
     </Card>
   );
 };

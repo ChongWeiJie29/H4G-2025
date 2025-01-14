@@ -64,7 +64,8 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ profilePic }) => {
         navigate("/settings");
         break;
       case "Log out":
-        navigate("/login");
+        sessionStorage.removeItem('token');
+        navigate("/");
         break;
       default:
         break;

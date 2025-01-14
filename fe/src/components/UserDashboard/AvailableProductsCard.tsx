@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import MockProducts from "../../mockDatabase/MockProducts";
+import { useQuery } from "@apollo/client";
+import { GET_ALL_PRODUCTS } from "../../gql/ops";
+import { Product } from "../../definitions/Product";
 
 // Styled components
 const WideCard = styled.div`
@@ -80,8 +82,8 @@ const Arrow = styled.button`
 `;
 
 const AvailableProductsCard: React.FC = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const products = MockProducts;
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  let products: Product[] = [];
 
   // Auto-rotate logic
   useEffect(() => {
@@ -89,12 +91,16 @@ const AvailableProductsCard: React.FC = () => {
       setCurrentIndex((prevIndex) =>
         prevIndex === products.length - 1 ? 0 : prevIndex + 1,
       );
-    }, 4000); // Rotate every 4 seconds
+    }, 4000);
 
-    return () => clearInterval(interval); // Clear interval on component unmount
+    return () => clearInterval(interval);
   }, [products.length]);
 
-  // Manual navigation
+  const { loading, error, data } = useQuery(GET_ALL_PRODUCTS, {});
+  if (loading) return <p>Loading...</p>;
+  products = !error ? data.getAllAvailableProducts.products: [];
+  const productsCount = !error ? data.getAllAvailableProducts.productsCount : 0;
+
   const handlePrev = () => {
     setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? products.length - 1 : prevIndex - 1,
@@ -109,19 +115,22 @@ const AvailableProductsCard: React.FC = () => {
 
   return (
     <WideCard>
-      <h2>Available Products</h2>
+      <h2>{productsCount} Available Products</h2>
       <CarouselWrapper>
         <Carousel translateX={currentIndex * 100}>
           {products.map((product, index) => (
             <CarouselCard key={index}>
               <Item>
-                <ProductImage src={product.image} alt={product.name} />
+                <ProductImage src={product.link} alt={product.name} />
                 <h3>{product.name}</h3>
               </Item>
               <div>
                 <strong>Description:</strong>
                 <p>{product.description}</p>
               </div>
+              <p>Tag: {product.tag}</p>
+              <p>Price: {product.price}</p>
+              <p>Quantity: {product.quantity}</p>
             </CarouselCard>
           ))}
         </Carousel>
