@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { CONFIRM_SHOPPING_CART } from "../../gql/ops";
 import { useMutation } from "@apollo/client";
 import ErrorModal from "../General/ErrorModal";
+import { useCart } from "../General/CartContext";
+import { CartItem } from "../../definitions/CartItem";
 
 const FooterWrapper = styled.div`
   display: flex;
@@ -47,17 +49,31 @@ interface CartFooterProps {
 const CartFooter: React.FC<CartFooterProps> = ({ totalCost, userVoucherAmount }) => {
   const [showError, setShowError] = useState(true);
 
-  const [confirmShoppingCart, { loading, error }] = useMutation(CONFIRM_SHOPPING_CART);
+  const { cartItems, clearCart } = useCart(); // Get cartItems from context
+
+  const [confirmShoppingCart, { loading, error }] = useMutation(CONFIRM_SHOPPING_CART, {
+    onCompleted: () => {
+      clearCart();
+      alert("Purchase confirmed!");
+    },
+    onError: (err) => {
+      console.error("Error confirming purchase:", err);
+    },
+  });
 
   const handleOnClick = () => {
-    // Perform purchase confirmation logic here
-    confirmShoppingCart({ variables: { shoppingCart: [] } }); // Update with actual shopping cart data
+    const cartData: CartItem[] = cartItems.map((item) => ({
+      product: item.product,
+      quantity: item.quantity,
+    }));
+
+    confirmShoppingCart({ variables: { shoppingCart: cartData } });
   };
 
   const handleCloseError = () => setShowError(false);
 
   const hasInsufficientVouchers = totalCost > userVoucherAmount;
-  const cartEmpty = totalCost === 0;
+  const emptyCart = cartItems.length === 0;
 
   return (
     <FooterWrapper>
@@ -68,12 +84,13 @@ const CartFooter: React.FC<CartFooterProps> = ({ totalCost, userVoucherAmount })
       )}
       <ConfirmPurchaseButton
         onClick={handleOnClick}
-        disabled={hasInsufficientVouchers || cartEmpty}
+        disabled={hasInsufficientVouchers || loading || emptyCart}
       >
-        Confirm Purchase
+        {loading ? "Processing..." : "Confirm Purchase"}
       </ConfirmPurchaseButton>
     </FooterWrapper>
   );
 };
 
 export default CartFooter;
+
