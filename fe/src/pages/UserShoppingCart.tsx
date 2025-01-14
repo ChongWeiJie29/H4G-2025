@@ -66,7 +66,7 @@ const CartPage: React.FC = () => {
       <BackToShop onClick={() => navigate("/shop")}>Back to Shop</BackToShop>
       <CartHeader itemCount={cartItems.length} onClearCart={handleClearCart} />
       <CartItemsContainer cartItems={cartItems} />
-      <CartFooter totalCost={totalCost} />
+      <CartFooter totalCost={totalCost} userVoucherAmount={user.voucher}/>
       <SideBarMenu />
       {isModalVisible && (
         <ConfirmationModal
