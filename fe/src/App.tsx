@@ -5,6 +5,7 @@ import UserShoppingCart from  "./pages/UserShoppingCart";
 import Login from "./pages/Login";
 import UserProfile from "./pages/UserProfile";
 import RequestVoucher from "./pages/RequestVoucher";
+import AdminPage from "./pages/AdminPage";
 
 const App = () => (
   <Router>
@@ -15,6 +16,7 @@ const App = () => (
       <Route path="/voucher-request" element={<RequestVoucher />} />
       <Route path="/shop" element={<UserMinimart />} />
       <Route path="/cart" element={<UserShoppingCart />} />
+      <Route path="/admin" element={<AdminPage />} />
     </Routes>
   </Router>
 );

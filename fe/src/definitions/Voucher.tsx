@@ -1,8 +1,8 @@
 export enum VoucherType {
-    pending = 'pending',
-    accepted = 'accepted',
-    rejected = 'rejected',
-  }
+  pending = 'pending',
+  accepted = 'accepted',
+  rejected = 'rejected',
+}
 
 export interface Voucher {
   voucher_id: number

@@ -72,3 +72,29 @@ export const GET_USER_VOUCHERS = gql`
     }
   }
 `;
+
+export const GET_ALL_USERS = gql`
+  query getAllUsers {
+    getAllUsers {
+      message
+      users {
+        name
+        password
+        status
+        isactive
+        email
+        phone
+        voucher
+      }
+      usersCount
+    }
+  }
+`;
+
+export const CREATE_USER = gql`
+  mutation createUser ($user: UserInput!) {
+    createUser (user:$user) {
+      message
+    }
+  }
+`;

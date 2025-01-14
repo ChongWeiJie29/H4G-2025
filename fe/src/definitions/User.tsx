@@ -1,12 +1,14 @@
-// Define the User type
+export enum UserType {
+  resident = 'resident',
+  admin = 'admin',
+}
+
 export interface User {
   name: string;
   password: string;
-  status: "resident" | "admin";
+  status: UserType;
   isactive: boolean;
   email: string;
   phone: string;
-  voucher: number | null; // Can be null if no balance
-  // transactions: Transaction[];
+  voucher: number;
 }
-
