@@ -77,10 +77,6 @@ const SidebarMenu = () => {
       case "View Transaction History":
         navigate("/transaction-history");
         break;
-
-      case "View Voucher Request History":
-        navigate("/voucher-request-history");
-        break;
       case "Make a Voucher Request":
         navigate("/voucher-request");
         break;
@@ -100,13 +96,8 @@ const SidebarMenu = () => {
         <Option onClick={() => handleOptionClick("View Transaction History")}>
           View Transaction History
         </Option>
-        <Option
-          onClick={() => handleOptionClick("View Voucher Request History")}
-        >
-          View Voucher Request History
-        </Option>
         <Option onClick={() => handleOptionClick("Make a Voucher Request")}>
-          Make a Voucher Request
+          Add Vouchers / View Vouchers History
         </Option>
         <Option onClick={() => handleOptionClick("Shop")}>Shop</Option>
       </Sidebar>

@@ -1,7 +1,7 @@
 import { useQuery } from "@apollo/client";
 import styled from "styled-components";
-import { GET_PENDING_VOUCHERS } from "../../gql/ops";
 import { Voucher } from "../../definitions/Voucher";
+import { GET_USER_VOUCHERS } from "../../gql/ops";
 
 const NotificationCardContainer = styled.div`
   flex: 1;
@@ -34,6 +34,8 @@ const VoucherList = styled.ul`
   display: flex;
   flex-direction: column;
   gap: 15px;
+  max-height: 300px;
+  overflow-y: auto;
 `;
 
 const VoucherItem = styled.li`
@@ -73,15 +75,12 @@ const NoVouchersMessage = styled.p`
 `;
 
 const NotificationsCard = () => {
-  const { loading, error, data } = useQuery(GET_PENDING_VOUCHERS, {});
+  const { loading, error, data } = useQuery(GET_USER_VOUCHERS, {});
 
   if (loading) return <p>Loading ...</p>;
 
-  // Ensure data exists and handle gracefully if null or undefined
-  const pendingVouchers: Voucher[] = !error && data.getPendingVouchers.vouchers;
-  const pendingVouchersCount: number = !error && data.getPendingVouchers.vouchersCount;
-
-  console.log(pendingVouchers);
+  const pendingVouchers: Voucher[] = !error && data.getUserVouchers.vouchers;
+  const pendingVouchersCount: number = !error && data.getUserVouchers.vouchersCount;
 
   return (
     <NotificationCardContainer>

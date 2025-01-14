@@ -56,9 +56,9 @@ export const CREATE_VOUCHER = gql`
   }
 `;
 
-export const GET_PENDING_VOUCHERS = gql`
-  query getPendingVouchers {
-    getPendingVouchers {
+export const GET_USER_VOUCHERS = gql`
+  query getUserVouchers {
+    getUserVouchers {
       message
       vouchers {
           voucher_id
