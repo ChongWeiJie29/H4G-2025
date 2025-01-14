@@ -83,25 +83,25 @@ const CartItemsContainer: React.FC = () => {
 
   const handleDecrement = (item: CartItem) => {
     if (item.quantity > 1) {
-      addToCart(item.product, -1); // Decrease quantity by 1
+      addToCart(item.product, -1);
     } else {
-      setItemToRemove(item); // Show confirmation modal if quantity would become 0
+      setItemToRemove(item);
     }
   };
 
   const handleIncrement = (item: CartItem) => {
-    addToCart(item.product, 1); // Increase quantity by 1
+    addToCart(item.product, 1);
   };
 
   const confirmRemoveItem = () => {
     if (itemToRemove) {
       removeFromCart(itemToRemove.product.name);
-      setItemToRemove(null); // Close the modal
+      setItemToRemove(null);
     }
   };
 
   const cancelRemoveItem = () => {
-    setItemToRemove(null); // Close the modal without removing
+    setItemToRemove(null);
   };
 
   return (

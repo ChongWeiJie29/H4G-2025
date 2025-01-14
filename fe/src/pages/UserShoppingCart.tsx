@@ -48,16 +48,16 @@ const CartPage: React.FC = () => {
   const user = data.getUser;
 
   const handleClearCart = () => {
-    setIsModalVisible(true); // Show confirmation modal
+    setIsModalVisible(true);
   };
 
   const confirmClearCart = () => {
-    clearCart(); // Clear the cart
-    setIsModalVisible(false); // Close the modal
+    clearCart();
+    setIsModalVisible(false);
   };
 
   const cancelClearCart = () => {
-    setIsModalVisible(false); // Close the modal without clearing
+    setIsModalVisible(false);
   };
 
   return (
