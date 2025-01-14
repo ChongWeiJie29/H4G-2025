@@ -2,6 +2,7 @@ import React, { useState }from "react";
 import styled from "styled-components";
 import { CartItem } from "../../definitions/CartItem";
 import { useCart } from "../General/CartContext";
+import ConfirmationModal from "../General/ConfirmationModal";
 
 const CartItemsWrapper = styled.div`
   display: flex;
@@ -76,49 +77,6 @@ const QuantityValue = styled.span`
   padding: 0 5px;
 `;
 
-const ConfirmationModal = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const ModalContent = styled.div`
-  background: white;
-  padding: 24px;
-  border-radius: 8px;
-  text-align: center;
-`;
-
-const ModalActions = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  margin-top: 16px;
-`;
-
-const ModalButton = styled.button`
-  padding: 8px 16px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-
-  &:first-child {
-    background-color: #f44336;
-    color: white;
-  }
-
-  &:last-child {
-    background-color: #ddd;
-    color: black;
-  }
-`;
-
 const CartItemsContainer: React.FC = () => {
   const { cartItems, addToCart, removeFromCart } = useCart();
   const [itemToRemove, setItemToRemove] = useState<CartItem | null>(null);
@@ -171,15 +129,11 @@ const CartItemsContainer: React.FC = () => {
 
       {/* Confirmation Modal */}
       {itemToRemove && (
-        <ConfirmationModal>
-          <ModalContent>
-            <p>Are you sure you want to remove "{itemToRemove.product.name}"?</p>
-            <ModalActions>
-              <ModalButton onClick={confirmRemoveItem}>Yes</ModalButton>
-              <ModalButton onClick={cancelRemoveItem}>No</ModalButton>
-            </ModalActions>
-          </ModalContent>
-        </ConfirmationModal>
+        <ConfirmationModal
+          modalContent={`Are you sure you want to remove "${itemToRemove.product.name}"?`}
+          onClickYes={confirmRemoveItem}
+          onClickNo={cancelRemoveItem}
+        />
       )}
     </>
   );
