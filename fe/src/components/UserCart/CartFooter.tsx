@@ -63,10 +63,16 @@ const CartFooter: React.FC<CartFooterProps> = ({ totalCost, userVoucherAmount })
 
   const handleOnClick = () => {
     const cartData: CartItem[] = cartItems.map((item) => ({
-      product: item.product,
+      product: {
+        name: item.product.name, 
+        tag: item.product.tag,
+        link: item.product.link,
+        price: item.product.price,
+        quantity: item.product.quantity,
+        description: item.product.description,
+      },
       quantity: item.quantity,
     }));
-
     confirmShoppingCart({ variables: { shoppingCart: cartData } });
   };
 
