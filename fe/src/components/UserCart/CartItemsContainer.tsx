@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState }from "react";
 import styled from "styled-components";
 import { CartItem } from "../../definitions/CartItem";
+import { useCart } from "../General/CartContext";
 
 const CartItemsWrapper = styled.div`
   display: flex;
@@ -75,55 +76,112 @@ const QuantityValue = styled.span`
   padding: 0 5px;
 `;
 
-interface CartItemsContainerProps {
-  cartItems: CartItem[];
-  updateCartItemQuantity: (index: number, newQuantity: number) => void;
-}
+const ConfirmationModal = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
-const CartItemsContainer: React.FC<CartItemsContainerProps> = ({
-  cartItems,
-  updateCartItemQuantity,
-}) => {
-  const handleDecrement = (index: number, currentQuantity: number) => {
-    if (currentQuantity > 0) {
-      updateCartItemQuantity(index, currentQuantity - 1);
+const ModalContent = styled.div`
+  background: white;
+  padding: 24px;
+  border-radius: 8px;
+  text-align: center;
+`;
+
+const ModalActions = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 16px;
+`;
+
+const ModalButton = styled.button`
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+
+  &:first-child {
+    background-color: #f44336;
+    color: white;
+  }
+
+  &:last-child {
+    background-color: #ddd;
+    color: black;
+  }
+`;
+
+const CartItemsContainer: React.FC = () => {
+  const { cartItems, addToCart, removeFromCart } = useCart();
+  const [itemToRemove, setItemToRemove] = useState<CartItem | null>(null);
+
+  const handleDecrement = (item: CartItem) => {
+    if (item.quantity > 1) {
+      addToCart(item.product, -1); // Decrease quantity by 1
+    } else {
+      setItemToRemove(item); // Show confirmation modal if quantity would become 0
     }
   };
 
-  const handleIncrement = (index: number, currentQuantity: number) => {
-    updateCartItemQuantity(index, currentQuantity + 1);
+  const handleIncrement = (item: CartItem) => {
+    addToCart(item.product, 1); // Increase quantity by 1
+  };
+
+  const confirmRemoveItem = () => {
+    if (itemToRemove) {
+      removeFromCart(itemToRemove.product.name);
+      setItemToRemove(null); // Close the modal
+    }
+  };
+
+  const cancelRemoveItem = () => {
+    setItemToRemove(null); // Close the modal without removing
   };
 
   return (
-    <CartItemsWrapper>
-      {cartItems.map((item, index) => (
-        <CartItemCard key={index}>
-          <ProductImage src={item.product.link} alt={item.product.name} />
-          <ProductDetails>
-            <ItemLabel>Item Name:</ItemLabel>
-            <ItemValue>{item.product.name}</ItemValue>
-          </ProductDetails>
-          <ProductDetails>
-            <ItemLabel>Unit Cost:</ItemLabel>
-            <ItemValue>{item.product.price} 💳</ItemValue>
-          </ProductDetails>
-          <QuantityContainer>
-            <QuantityButton
-              onClick={() => handleDecrement(index, item.quantity)}
-              disabled={item.quantity <= 0}
-            >
-              -
-            </QuantityButton>
-            <QuantityValue>{item.quantity}</QuantityValue>
-            <QuantityButton
-              onClick={() => handleIncrement(index, item.quantity)}
-            >
-              +
-            </QuantityButton>
-          </QuantityContainer>
-        </CartItemCard>
-      ))}
-    </CartItemsWrapper>
+    <>
+      <CartItemsWrapper>
+        {cartItems.map((item, index) => (
+          <CartItemCard key={index}>
+            <ProductImage src={item.product.link} alt={item.product.name} />
+            <ProductDetails>
+              <ItemLabel>Item Name:</ItemLabel>
+              <ItemValue>{item.product.name}</ItemValue>
+            </ProductDetails>
+            <ProductDetails>
+              <ItemLabel>Unit Cost:</ItemLabel>
+              <ItemValue>{item.product.price} 💳</ItemValue>
+            </ProductDetails>
+            <QuantityContainer>
+              <QuantityButton onClick={() => handleDecrement(item)}>-</QuantityButton>
+              <QuantityValue>{item.quantity}</QuantityValue>
+              <QuantityButton onClick={() => handleIncrement(item)}>+</QuantityButton>
+            </QuantityContainer>
+          </CartItemCard>
+        ))}
+      </CartItemsWrapper>
+
+      {/* Confirmation Modal */}
+      {itemToRemove && (
+        <ConfirmationModal>
+          <ModalContent>
+            <p>Are you sure you want to remove "{itemToRemove.product.name}"?</p>
+            <ModalActions>
+              <ModalButton onClick={confirmRemoveItem}>Yes</ModalButton>
+              <ModalButton onClick={cancelRemoveItem}>No</ModalButton>
+            </ModalActions>
+          </ModalContent>
+        </ConfirmationModal>
+      )}
+    </>
   );
 };
 
