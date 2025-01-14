@@ -22,5 +22,6 @@ const App = () => (
             </Routes>
         </Router>
     </CartProvider>
+);
 
 export default App;
