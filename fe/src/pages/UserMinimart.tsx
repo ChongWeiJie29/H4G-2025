@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styled from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 import UserPageHeader from "../components/General/UserPageHeader";
 import SideBarMenu from "../components/General/SideBarMenu";
 import ProductCard from "../components/UserMinimart/ProductCard";
@@ -13,6 +13,7 @@ import { User } from "../definitions/User";
 import { Product } from "../definitions/Product";
 import ErrorModal from "../components/General/ErrorModal";
 import LoadingScreen from "../components/General/LoadingScreen";
+import { useCart } from "../components/General/CartContext";
 
 const MinimartContainer = styled.div`
   display: flex;
@@ -73,7 +74,16 @@ const SearchBarAndFilter = styled.div`
 flex: 0.6;
 `;
 
-const ShoppingCartButton = styled.button`
+const blinkAnimation = keyframes`
+  0%, 100% {
+    border-color: #aaa;
+  }
+  50% {
+    border-color: #0d0;
+  }
+`;
+
+const ShoppingCartButton = styled.button<{ hasItems: boolean }>`
   background: #fff;
   border: 2px solid #aaa;
   border-radius: 8px;
@@ -81,6 +91,12 @@ const ShoppingCartButton = styled.button`
   cursor: pointer;
   display: flex;
   align-items: center;
+
+  ${({ hasItems }) =>
+    hasItems &&
+    css`
+      animation: ${blinkAnimation} 2.5s infinite;
+    `}
 `;
 
 const UserMinimart: React.FC = () => {
@@ -95,6 +111,7 @@ const UserMinimart: React.FC = () => {
   });
 
   const handleCloseError = () => setShowError(false);
+  const { cartItems } = useCart();
 
   const { loading: productLoading, error: productError, data: productData } = useQuery(GET_ALL_PRODUCTS, {});
   const { loading: userLoading, error: userError, data: userData } = useQuery(GET_USER, {});
@@ -142,7 +159,7 @@ const UserMinimart: React.FC = () => {
           <VoucherDisplay>
             <p>You have: {user.voucher} 💳</p>
           </VoucherDisplay>
-          <ShoppingCartButton>
+          <ShoppingCartButton hasItems={cartItems.length > 0}>
             <img
               src="/images/shopping-cart.png"
               alt="cart"
