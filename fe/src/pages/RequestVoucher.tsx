@@ -7,6 +7,7 @@ import ErrorModal from "../components/General/ErrorModal";
 import { useNavigate } from "react-router-dom";
 import SidebarMenu from "../components/General/SideBarMenu";
 import { Voucher } from "../definitions/Voucher";
+import LoadingScreen from "../components/General/LoadingScreen";
 
 // Styled Components
 const PageContainer = styled.div`
@@ -143,8 +144,7 @@ const CollectUserData: React.FC = () => {
   const { loading: userLoading, error: userError, data: userData } = useQuery(GET_USER, {});
   const { loading: getVouchersLoading, error: getVouchersError, data: getVouchersData } = useQuery(GET_USER_VOUCHERS, {});
   const [createVoucher, { data: voucherData, loading: voucherLoading, error: voucherError }] = useMutation(CREATE_VOUCHER);
-
-  if (userLoading || voucherLoading || getVouchersLoading) return <p>Loading...</p>;
+  if (userLoading || voucherLoading || getVouchersLoading) return <LoadingScreen />;
 
   const user = !userError && userData.getUser;
   const vouchers: Voucher[] = !getVouchersError && getVouchersData.getUserVouchers.vouchers;

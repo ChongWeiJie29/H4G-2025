@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useLazyQuery } from "@apollo/client";
 import { AUTHENTICATE_USER } from "../../gql/ops";
 import ErrorModal from "../General/ErrorModal";
+import LoadingScreen from "../General/LoadingScreen";
 
 const Card = styled.div`
   width: 400px;
@@ -86,11 +87,10 @@ const LoginCard: React.FC = () => {
   const [showError, setShowError] = useState(true);
 
   const [authUser, { loading, error, data }] = useLazyQuery(AUTHENTICATE_USER);
-  if (loading) return <p>Loading ...</p>;
+  if (loading) return <LoadingScreen />;
   
   const onSignIn = () => {
     setShowError(true);
-    console.log(error);
     authUser({
       variables: { user: { name, password } }
     });

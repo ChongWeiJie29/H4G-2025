@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { useQuery } from "@apollo/client";
-import { GET_ALL_PRODUCTS } from "../../gql/ops";
 import { Product } from "../../definitions/Product";
 
 // Styled components
@@ -81,9 +79,13 @@ const Arrow = styled.button`
   }
 `;
 
-const AvailableProductsCard: React.FC = () => {
+interface Props {
+  products: Product[];
+  productsCount: number;
+}
+
+const AvailableProductsCard: React.FC<Props> = ({ products, productsCount }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
-  let products: Product[] = [];
 
   // Auto-rotate logic
   useEffect(() => {
@@ -95,11 +97,6 @@ const AvailableProductsCard: React.FC = () => {
 
     return () => clearInterval(interval);
   }, [products.length]);
-
-  const { loading, error, data } = useQuery(GET_ALL_PRODUCTS, {});
-  if (loading) return <p>Loading...</p>;
-  products = !error ? data.getAllAvailableProducts.products: [];
-  const productsCount = !error ? data.getAllAvailableProducts.productsCount : 0;
 
   const handlePrev = () => {
     setCurrentIndex((prevIndex) =>

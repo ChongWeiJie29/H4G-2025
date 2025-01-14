@@ -12,6 +12,7 @@ import { GET_ALL_PRODUCTS, GET_USER } from "../gql/ops";
 import { User } from "../definitions/User";
 import { Product } from "../definitions/Product";
 import ErrorModal from "../components/General/ErrorModal";
+import LoadingScreen from "../components/General/LoadingScreen";
 
 const MinimartContainer = styled.div`
   display: flex;
@@ -85,38 +86,22 @@ const ShoppingCartButton = styled.button`
 const UserMinimart: React.FC = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [isFilterModalOpen, setFilterModalOpen] = useState(false);
+  const [showError, setShowError] = useState(true);
   const [filters, setFilters] = useState({
     cost: null as number | null,
     type: null as string | null,
     inStock: false,
   });
-  const [isFilterModalOpen, setFilterModalOpen] = useState(false);
-  const [showError, setShowError] = useState(true);
 
   const handleCloseError = () => setShowError(false);
 
-  let {
-    loading: productLoading,
-    error: productError,
-    data: productData,
-  } = useQuery(GET_ALL_PRODUCTS, {});
-
-  let {
-    loading: userLoading,
-    error: userError,
-    data: userData,
-  } = useQuery(GET_USER, {});
-
-  if (userLoading || productLoading) return <p>Loading ...</p>;
-  let error;
-  if (userError) {
-    error = userError;
-  } else if (productError) {
-    error = productError;
-  }
-
-  const products: Product[] = !error ? productData.getAllAvailableProducts.products : [];
-  const user: User = !error && userData.getUser;
+  const { loading: productLoading, error: productError, data: productData } = useQuery(GET_ALL_PRODUCTS, {});
+  const { loading: userLoading, error: userError, data: userData } = useQuery(GET_USER, {});
+  if (userLoading || productLoading) return <LoadingScreen />;
+  
+  const products: Product[] = productError ? [] : productData.getAllAvailableProducts.products;
+  const user: User = userError ? null : userData.getUser;
 
   // filter products based on search query and filters
   const filteredProducts = products.filter((product) => {
@@ -143,7 +128,7 @@ const UserMinimart: React.FC = () => {
   return (
     <MinimartContainer>
       {(productError || userError) && showError && (
-        <ErrorModal error={error} close={handleCloseError} />
+        <ErrorModal error={(productError || userError)} close={handleCloseError} />
       )}
       <UserPageHeader user={user} />
       <MinimartBody>

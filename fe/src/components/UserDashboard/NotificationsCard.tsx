@@ -1,7 +1,5 @@
-import { useQuery } from "@apollo/client";
 import styled from "styled-components";
 import { Voucher } from "../../definitions/Voucher";
-import { GET_USER_VOUCHERS } from "../../gql/ops";
 
 const NotificationCardContainer = styled.div`
   flex: 1;
@@ -74,14 +72,12 @@ const NoVouchersMessage = styled.p`
   font-style: italic;
 `;
 
-const NotificationsCard = () => {
-  const { loading, error, data } = useQuery(GET_USER_VOUCHERS, {});
+interface Props {
+  pendingVouchers: Voucher[];
+  pendingVouchersCount: number;
+}
 
-  if (loading) return <p>Loading ...</p>;
-
-  const pendingVouchers: Voucher[] = !error && data.getUserVouchers.vouchers;
-  const pendingVouchersCount: number = !error && data.getUserVouchers.vouchersCount;
-
+const NotificationsCard = ({pendingVouchers, pendingVouchersCount}: Props) => {
   return (
     <NotificationCardContainer>
       <Title>Notifications</Title>
