@@ -151,3 +151,11 @@ export const UPDATE_PRODUCT_STATUS = gql`
     }
   }
 `;
+
+export const DELETE_PRODUCT = gql`
+  mutation deleteProduct ($name:String!) {
+    deleteProduct(name:$name) {
+      message
+    }
+  }
+`

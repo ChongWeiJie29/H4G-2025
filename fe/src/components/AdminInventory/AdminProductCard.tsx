@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import styled, { css, keyframes } from "styled-components";
 import { Product } from "../../definitions/Product";
 import ConfirmationModal from "../General/ConfirmationModal";
+import { DELETE_PRODUCT, GET_ALL_PRODUCTS } from "../../gql/ops";
+import { useMutation } from "@apollo/client";
 
 const fadeIn = keyframes`
   from {
@@ -163,6 +165,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [isOptionsVisible, setOptionsVisible] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
+  const [deleteProduct] = useMutation(DELETE_PRODUCT);
 
   const handleShowOptions = () => setOptionsVisible(true);
 
@@ -175,17 +178,42 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   };
 
   const handleDelete = () => {
-    setModalVisible(true); // Show confirmation modal
+    setModalVisible(true);
   };
 
-  const handleConfirmDelete = () => {
-    console.log(`Product "${product.name}" deleted.`);
-    setModalVisible(false); // Close modal
-    setOptionsVisible(false); // Hide options
+  const handleConfirmDelete = async () => {
+    try {
+      const response = await deleteProduct({
+        variables: {
+          name: product.name,
+        },
+        update: (cache) => {
+          const existingProducts: any = cache.readQuery({ query: GET_ALL_PRODUCTS });
+          if (existingProducts) {
+            cache.writeQuery({
+              query: GET_ALL_PRODUCTS,
+              data: {
+                getAllAvailableProducts: {
+                  products: existingProducts.getAllAvailableProducts.products.filter(
+                    (p: Product) => p.name !== product.name
+                  ),
+                },
+              },
+            });
+          }
+        },
+      });
+      console.log(response.data.deleteProduct.message); // Log the success message
+      setModalVisible(false); // Close modal
+      setOptionsVisible(false); // Hide options
+    } catch (err) {
+      console.error("Failed to delete the product:", err);
+    }
   };
+  
 
   const handleCancelDelete = () => {
-    setModalVisible(false); // Close modal without deleting
+    setModalVisible(false);
   };
   const handleEdit = () =>
     console.log(`Edit modal for "${product.name}" opened.`);
@@ -217,7 +245,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <CancelButton onClick={handleHideOptions}>Cancel</CancelButton>
         </OptionsOverlay>
       )}
-       {isModalVisible && (
+      {isModalVisible && (
         <ConfirmationModal
           modalContent={`Are you sure you want to delete "${product.name}"?`}
           onClickYes={handleConfirmDelete}
@@ -229,4 +257,3 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 };
 
 export default ProductCard;
-
