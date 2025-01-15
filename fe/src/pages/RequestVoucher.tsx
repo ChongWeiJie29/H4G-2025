@@ -160,7 +160,10 @@ const CollectUserData: React.FC = () => {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    createVoucher({ variables: { voucher: { amount: amount, task: task } } });
+    createVoucher({ 
+      variables: { voucher: { amount: amount, task: task } },
+      refetchQueries: [GET_USER_VOUCHERS] 
+    });
     setAmount(0);
     setTask("");
     navigate("/dashboard");

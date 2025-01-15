@@ -5,7 +5,7 @@ import SideBarMenu from "../components/General/SideBarMenu";
 import CartItemsContainer from "../components/UserCart/CartItemsContainer";
 import CartHeader from "../components/UserCart/CartHeader";
 import CartFooter from "../components/UserCart/CartFooter";
-import { useQuery } from "@apollo/client";
+import { ApolloConsumer, useQuery } from "@apollo/client";
 import { GET_USER } from "../gql/ops";
 import { useCart } from "../components/General/CartContext";
 import ConfirmationModal from "../components/General/ConfirmationModal";
@@ -45,20 +45,24 @@ const CartPage: React.FC = () => {
   };
 
   return (
-    <CartPageContainer>
-      <UserPageHeader user={user} />
-      <CartHeader itemCount={cartItems.length} onClearCart={handleClearCart} />
-      <CartItemsContainer cartItems={cartItems} />
-      <CartFooter totalCost={totalCost} userVoucherAmount={user.voucher}/>
-      <SideBarMenu />
-      {isModalVisible && (
-        <ConfirmationModal
-          modalContent="Are you sure you want to clear the cart?"
-          onClickYes={confirmClearCart}
-          onClickNo={cancelClearCart}
-        />
+    <ApolloConsumer>
+      {(client) => (
+        <CartPageContainer>
+        <UserPageHeader user={user} />
+        <CartHeader itemCount={cartItems.length} onClearCart={handleClearCart} />
+        <CartItemsContainer cartItems={cartItems} />
+        <CartFooter  client={client} totalCost={totalCost} userVoucherAmount={user.voucher}/>
+        <SideBarMenu />
+        {isModalVisible && (
+          <ConfirmationModal
+            modalContent="Are you sure you want to clear the cart?"
+            onClickYes={confirmClearCart}
+            onClickNo={cancelClearCart}
+          />
+        )}
+      </CartPageContainer>
       )}
-    </CartPageContainer>
+    </ApolloConsumer>
   );
 };
 

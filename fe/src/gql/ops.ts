@@ -98,3 +98,56 @@ export const CREATE_USER = gql`
     }
   }
 `;
+
+export const GET_VOUCHER_REQUESTS = gql`
+  query getAllPendingVouchers {
+    getAllPendingVouchers {
+      message
+      vouchers {
+        voucher_id
+        name
+        amount
+        task
+        status
+        request_time
+        response_time
+      }
+      vouchersCount
+    }
+  }
+`;
+
+export const GET_PRODUCT_REQUESTS = gql`
+  query getAllPendingRequests {
+    getAllPendingRequests {
+      message
+      requests {
+        request_id
+        status
+        name
+        product
+        price
+        quantity
+        request_time
+        response_time
+      }
+      requestsCount
+    }
+  }
+`;
+
+export const UPDATE_VOUCHER_STATUS = gql`
+  mutation updateVoucherStatus ($details:UpdateVoucherStatusInput!) {
+    updateVoucherStatus (details:$details) {
+      message
+    }
+  }
+`;
+
+export const UPDATE_PRODUCT_STATUS = gql`
+  mutation updateRequestStatus ($details: RequestUpdateStatusInput!) {
+    updateRequestStatus (details:$details) {
+      message
+    }
+  }
+`;

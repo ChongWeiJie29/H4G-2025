@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { CONFIRM_SHOPPING_CART } from "../../gql/ops";
-import { useMutation } from "@apollo/client";
+import { ApolloClient, useMutation } from "@apollo/client";
 import ErrorModal from "../General/ErrorModal";
 import { useCart } from "../General/CartContext";
 import { CartItem } from "../../definitions/CartItem";
+import { useNavigate } from "react-router-dom";
 
 const FooterWrapper = styled.div`
   display: flex;
@@ -42,11 +43,13 @@ const ConfirmPurchaseButton = styled.button<{ disabled: boolean }>`
 `;
 
 interface CartFooterProps {
+  client: ApolloClient<Object>;
   totalCost: number;
-    userVoucherAmount: number;
+  userVoucherAmount: number;
 }
 
-const CartFooter: React.FC<CartFooterProps> = ({ totalCost, userVoucherAmount }) => {
+const CartFooter: React.FC<CartFooterProps> = ({ client, totalCost, userVoucherAmount }) => {
+  const navigate = useNavigate();
   const [showError, setShowError] = useState(true);
 
   const { cartItems, clearCart } = useCart(); // Get cartItems from context
@@ -55,6 +58,8 @@ const CartFooter: React.FC<CartFooterProps> = ({ totalCost, userVoucherAmount })
     onCompleted: () => {
       clearCart();
       alert("Purchase confirmed! The voucher amount will be deducted once the request has been approved.");
+      client.clearStore();
+      navigate('/dashboard');
     },
     onError: (err) => {
       console.error("Error confirming purchase:", err);

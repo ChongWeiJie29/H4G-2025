@@ -8,6 +8,7 @@ import ErrorModal from "../components/General/ErrorModal";
 import LoadingScreen from "../components/General/LoadingScreen";
 import { useQuery } from "@apollo/client";
 import { GET_USER } from "../gql/ops";
+import ManageRequests from "../components/Admin/ManageRequests";
 
 const AdminContainer = styled.div`
   max-width: 80vw;
@@ -75,7 +76,7 @@ const AdminPage: React.FC = () => {
       case 2:
         return <Inventory />;
       case 3:
-        return <div>Tab 3 Content</div>;
+        return <ManageRequests />;
       case 4:
         return <div>Tab 4 Content</div>;
       default:
@@ -97,7 +98,7 @@ const AdminPage: React.FC = () => {
           Inventory
         </Tab>
         <Tab active={activeTab === 3} onClick={() => setActiveTab(3)}>
-          Tab 3
+          Manage Requests
         </Tab>
         <Tab active={activeTab === 4} onClick={() => setActiveTab(4)}>
           Tab 4
