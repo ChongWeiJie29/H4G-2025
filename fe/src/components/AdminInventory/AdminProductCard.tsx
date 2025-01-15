@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled, { css, keyframes } from "styled-components";
 import { Product } from "../../definitions/Product";
+import ConfirmationModal from "../General/ConfirmationModal";
 
 const fadeIn = keyframes`
   from {
@@ -161,6 +162,7 @@ interface ProductCardProps {
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [isOptionsVisible, setOptionsVisible] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
+  const [isModalVisible, setModalVisible] = useState(false);
 
   const handleShowOptions = () => setOptionsVisible(true);
 
@@ -169,10 +171,22 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     setTimeout(() => {
       setOptionsVisible(false);
       setIsExiting(false);
-    }, 300); // Wait for the animation to complete
+    }, 300);
   };
 
-  const handleDelete = () => console.log(`Product "${product.name}" deleted.`);
+  const handleDelete = () => {
+    setModalVisible(true); // Show confirmation modal
+  };
+
+  const handleConfirmDelete = () => {
+    console.log(`Product "${product.name}" deleted.`);
+    setModalVisible(false); // Close modal
+    setOptionsVisible(false); // Hide options
+  };
+
+  const handleCancelDelete = () => {
+    setModalVisible(false); // Close modal without deleting
+  };
   const handleEdit = () =>
     console.log(`Edit modal for "${product.name}" opened.`);
 
@@ -202,6 +216,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <OptionButton onClick={handleDelete}>Delete</OptionButton>
           <CancelButton onClick={handleHideOptions}>Cancel</CancelButton>
         </OptionsOverlay>
+      )}
+       {isModalVisible && (
+        <ConfirmationModal
+          modalContent={`Are you sure you want to delete "${product.name}"?`}
+          onClickYes={handleConfirmDelete}
+          onClickNo={handleCancelDelete}
+        />
       )}
     </ContainerWrapper>
   );
