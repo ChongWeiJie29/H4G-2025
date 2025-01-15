@@ -118,7 +118,7 @@ const OptionsOverlay = styled.div<{ isExiting: boolean }>`
   animation: ${({ isExiting }) => (isExiting ? fadeOut : fadeIn)} 0.3s ease;
 `;
 
-const OptionButton = styled.button`
+const DeleteButton = styled.button`
   background: #fff;
   border: none;
   border-radius: 4px;
@@ -203,9 +203,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           }
         },
       });
-      console.log(response.data.deleteProduct.message); // Log the success message
-      setModalVisible(false); // Close modal
-      setOptionsVisible(false); // Hide options
+      setModalVisible(false);
+      setOptionsVisible(false);
     } catch (err) {
       console.error("Failed to delete the product:", err);
     }
@@ -215,8 +214,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const handleCancelDelete = () => {
     setModalVisible(false);
   };
-  const handleEdit = () =>
-    console.log(`Edit modal for "${product.name}" opened.`);
 
   return (
     <ContainerWrapper>
@@ -240,8 +237,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
       {isOptionsVisible && (
         <OptionsOverlay isExiting={isExiting}>
-          <OptionButton onClick={handleEdit}>Edit</OptionButton>
-          <OptionButton onClick={handleDelete}>Delete</OptionButton>
+          <DeleteButton onClick={handleDelete}>Delete</DeleteButton>
           <CancelButton onClick={handleHideOptions}>Cancel</CancelButton>
         </OptionsOverlay>
       )}

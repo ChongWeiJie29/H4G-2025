@@ -158,4 +158,4 @@ export const DELETE_PRODUCT = gql`
       message
     }
   }
-`
+`;
