@@ -13,7 +13,8 @@ const CartItemsWrapper = styled.div`
 `;
 
 const CartItemCard = styled.div`
-  display: grid;
+  display: flex;
+  justify-content: space-evenly;
   grid-template-columns: 1fr 2fr 1fr 1fr;
   align-items: center;
   padding: 10px;
@@ -117,6 +118,13 @@ const CartItemsContainer: React.FC = () => {
             <ProductDetails>
               <ItemLabel>Unit Cost:</ItemLabel>
               <ItemValue>{item.product.price} 💳</ItemValue>
+            </ProductDetails>
+            <ProductDetails>
+              {item.product.quantity > 0 ? (
+                <ItemValue>In Stock</ItemValue>
+              ) : (
+                <ItemValue style={{ color: "orange" }}>Preorder Available</ItemValue>
+              )}
             </ProductDetails>
             <QuantityContainer>
               <QuantityButton onClick={() => handleDecrement(item)}>-</QuantityButton>
