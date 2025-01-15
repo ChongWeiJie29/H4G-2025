@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { Voucher } from "../../definitions/Voucher";
+import { Transaction } from "../../definitions/Transaction";
 
 const NotificationCardContainer = styled.div`
   flex: 1;
@@ -25,6 +26,27 @@ const NotificationText = styled.p`
   text-align: center;
 `;
 
+const ListSection = styled.div`
+  margin-bottom: 20px;
+`;
+
+const SectionTitle = styled.h3`
+  font-size: 1.4rem;
+  color: #333;
+  margin-bottom: 10px;
+`;
+
+const RequestList = styled.ul`
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-height: 300px;
+  overflow-y: auto;
+`;
+
 const VoucherList = styled.ul`
   list-style: none;
   padding: 0;
@@ -36,7 +58,7 @@ const VoucherList = styled.ul`
   overflow-y: auto;
 `;
 
-const VoucherItem = styled.li`
+const ListItem = styled.li`
   padding: 15px 20px;
   background-color: #ffffff;
   border: 1px solid #e0e0e0;
@@ -53,18 +75,23 @@ const VoucherItem = styled.li`
   }
 `;
 
-const VoucherName = styled.span`
+const ItemDetails = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const ItemTitle = styled.span`
   font-size: 1rem;
   font-weight: bold;
   color: #333;
 `;
 
-const VoucherDetail = styled.span`
+const ItemSubtitle = styled.span`
   font-size: 0.9rem;
   color: #777;
 `;
 
-const NoVouchersMessage = styled.p`
+const NoItemsMessage = styled.p`
   text-align: center;
   font-size: 1rem;
   color: #888;
@@ -75,27 +102,63 @@ const NoVouchersMessage = styled.p`
 interface Props {
   pendingVouchers: Voucher[];
   pendingVouchersCount: number;
+  pendingRequests: Transaction[];
+  pendingRequestsCount: number;
 }
 
-const NotificationsCard = ({pendingVouchers, pendingVouchersCount}: Props) => {
+const NotificationsCard = ({
+  pendingVouchers,
+  pendingVouchersCount,
+  pendingRequests,
+  pendingRequestsCount,
+}: Props) => {
   return (
     <NotificationCardContainer>
       <Title>Notifications</Title>
       <NotificationText>
-        You have {pendingVouchersCount} pending voucher{pendingVouchersCount !== 1 ? "s" : ""}.
+        You have {pendingVouchersCount} pending voucher
+        {pendingVouchersCount !== 1 ? "s" : ""} and {pendingRequestsCount} pending request
+        {pendingRequestsCount !== 1 ? "s" : ""}.
       </NotificationText>
-      <VoucherList>
-        {pendingVouchers.length > 0 ? (
-          pendingVouchers.map((voucher, index) => (
-            <VoucherItem key={index}>
-              <VoucherName>{voucher.task}</VoucherName>
-              <VoucherDetail>{voucher.amount} points</VoucherDetail>
-            </VoucherItem>
-          ))
-        ) : (
-          <NoVouchersMessage>No pending vouchers at the moment.</NoVouchersMessage>
-        )}
-      </VoucherList>
+
+      <ListSection>
+        <SectionTitle>Pending Vouchers</SectionTitle>
+        <VoucherList>
+          {pendingVouchers.length > 0 ? (
+            pendingVouchers.map((voucher, index) => (
+              <ListItem key={index}>
+                <ItemDetails>
+                  <ItemTitle>{voucher.task}</ItemTitle>
+                  <ItemSubtitle>{voucher.amount} points</ItemSubtitle>
+                </ItemDetails>
+              </ListItem>
+            ))
+          ) : (
+            <NoItemsMessage>No pending vouchers at the moment.</NoItemsMessage>
+          )}
+        </VoucherList>
+      </ListSection>
+
+      <ListSection>
+        <SectionTitle>Pending Requests</SectionTitle>
+        <RequestList>
+          {pendingRequests.length > 0 ? (
+            pendingRequests.map((request, index) => (
+              <ListItem key={index}>
+                <ItemDetails>
+                  <ItemTitle>{request.product}</ItemTitle>
+                  <ItemSubtitle>
+                    Quantity: {request.quantity} | Total: {request.price * request.quantity} 💳
+                  </ItemSubtitle>
+                </ItemDetails>
+                <ItemSubtitle>Status: {request.status}</ItemSubtitle>
+              </ListItem>
+            ))
+          ) : (
+            <NoItemsMessage>No pending requests at the moment.</NoItemsMessage>
+          )}
+        </RequestList>
+      </ListSection>
     </NotificationCardContainer>
   );
 };

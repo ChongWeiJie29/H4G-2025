@@ -151,3 +151,22 @@ export const UPDATE_PRODUCT_STATUS = gql`
     }
   }
 `;
+
+export const GET_USER_REQUESTS = gql`
+  query getUserRequests {
+    getUserRequests {
+      message
+      requests {
+        request_id
+        status
+        name
+        product
+        price
+        quantity
+        request_time
+        response_time
+      }
+      requestsCount
+    }
+  }
+`;

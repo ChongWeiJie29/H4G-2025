@@ -5,10 +5,12 @@ import AvailableProductsCard from "../components/UserDashboard/AvailableProducts
 import SidebarMenu from "../components/General/SideBarMenu";
 import UserPageHeader from "../components/General/UserPageHeader";
 import { useQuery } from '@apollo/client';
-import { GET_ALL_PRODUCTS, GET_USER, GET_USER_VOUCHERS } from "../gql/ops";
+import { GET_ALL_PRODUCTS, GET_USER, GET_USER_REQUESTS, GET_USER_VOUCHERS } from "../gql/ops";
 import ErrorModal from "../components/General/ErrorModal";
 import { useState } from "react";
 import LoadingScreen from "../components/General/LoadingScreen";
+import { Voucher, VoucherType } from "../definitions/Voucher";
+import { RequestType, Transaction } from "../definitions/Transaction";
 
 const DashboardContainer = styled.div`
   max-width: 80vw;
@@ -33,12 +35,18 @@ const UserDashboard = () => {
   const { loading: userLoading, error: userError, data: userData } = useQuery(GET_USER);
   const { loading: vouchersLoading, error: vouchersError, data: vouchersData } = useQuery(GET_USER_VOUCHERS);
   const { loading: productsLoading, error: productsError, data: productsData } = useQuery(GET_ALL_PRODUCTS);
+  const { loading: requestsLoading, error: requestsError, data: requestsData } = useQuery(GET_USER_REQUESTS);
   
-  if (userLoading || vouchersLoading || productsLoading) return <LoadingScreen />;
+  if (userLoading || vouchersLoading || productsLoading || requestsLoading) return <LoadingScreen />;
 
   const user = userError ? null : userData?.getUser;
-  const pendingVouchers = vouchersError ? [] : vouchersData?.getUserVouchers?.vouchers || [];
-  const pendingVouchersCount = vouchersError ? 0 : vouchersData?.getUserVouchers?.vouchersCount || 0;
+  const pendingVouchers = vouchersError ? [] : vouchersData.getUserVouchers.vouchers.filter(
+    (item: Voucher) => item.status === VoucherType.pending) || [];
+  const pendingVouchersCount = pendingVouchers.length;
+  const pendingRequests = requestsError ? [] : requestsData.getUserRequests.requests.filter(
+    (item: Transaction) => item.status === RequestType.pending) || [];
+  const pendingRequestsCount = pendingRequests.length;
+
   const products = productsError ? [] : productsData?.getAllAvailableProducts?.products || [];
   const productsCount = productsError ? 0 : productsData?.getAllAvailableProducts?.productsCount || 0;
 
@@ -53,7 +61,8 @@ const UserDashboard = () => {
       <DashboardBody>
         <CardContainer>
           <RecentTransactionsCard />
-          <NotificationsCard pendingVouchers={pendingVouchers} pendingVouchersCount={pendingVouchersCount} />
+          <NotificationsCard pendingVouchers={pendingVouchers} pendingVouchersCount={pendingVouchersCount}
+            pendingRequests={pendingRequests} pendingRequestsCount={pendingRequestsCount} />
         </CardContainer>
         <AvailableProductsCard products={products} productsCount={productsCount} />
       </DashboardBody>
