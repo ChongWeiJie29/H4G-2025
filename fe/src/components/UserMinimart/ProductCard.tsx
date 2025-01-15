@@ -129,8 +129,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <ProductDescription>{product.description}</ProductDescription>
         <CategoryTag>{product.tag}</CategoryTag>
         <ProductFooter>
-          <QuantityLeft>Qty: {product.quantity}</QuantityLeft>
-          <UnitCost>{product.price} 💳</UnitCost>
+          {product.quantity > 0 ? (
+            <QuantityLeft>Qty: {product.quantity}</QuantityLeft>
+          ) : (
+            <QuantityLeft>Preorder available</QuantityLeft>
+          )}
+        <UnitCost>{product.price} 💳</UnitCost>
         </ProductFooter>
       </ProductDetails>
       {notification && <Notification>Item added to cart!</Notification>}

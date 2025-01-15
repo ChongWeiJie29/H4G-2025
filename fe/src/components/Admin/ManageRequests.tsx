@@ -136,13 +136,6 @@ const ManageRequests: React.FC = () => {
 
     updateVoucherStatus({
       variables: { details: { voucher_id: id, status: newStatus } },
-      optimisticResponse: {
-        updateVoucherStatus: {
-          __typename: "Voucher",
-          voucher_id: id,
-          status: newStatus,
-        },
-      },
     });
   };
 
@@ -153,13 +146,6 @@ const ManageRequests: React.FC = () => {
     setProductRequests(updatedRequests);
     updateProductStatus({
       variables: { details: { request_id: id, status: newStatus } },
-      optimisticResponse: {
-        updateProductStatus: {
-          __typename: "Transaction",
-          request_id: id,
-          status: newStatus,
-        },
-      },
     });
   };
 
