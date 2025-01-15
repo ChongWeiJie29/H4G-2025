@@ -1,21 +1,34 @@
 import React, { useState } from "react";
-import styled from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 import { Product } from "../../definitions/Product";
-import ConfirmationModal from "../General/ConfirmationModal";
 
-const ContainerWrapper = styled.div<{ isModalVisible: boolean }>`
-  position: relative;
-
-  // Disable pointer events on background when modal is open
-  ${({ isModalVisible }) =>
-    isModalVisible &&
-    `
-    pointer-events: none;
-    opacity: 0.8;
-  `}
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 `;
 
-const CardContainer = styled.div`
+const fadeOut = keyframes`
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+`;
+
+const ContainerWrapper = styled.div`
+  position: relative;
+`;
+
+const CardContainer = styled.div<{ isOptionsVisible: boolean }>`
   position: relative;
   background: white;
   border: 1px solid #ccc;
@@ -24,18 +37,22 @@ const CardContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  transition: box-shadow 0.3s ease, transform 0.2s ease;
+  transition:
+    box-shadow 0.3s ease,
+    transform 0.2s ease,
+    background-color 0.2s ease;
+
+  ${({ isOptionsVisible }) =>
+    isOptionsVisible &&
+    css`
+      background-color: #f5f5f5;
+      animation: ${fadeIn} 0.3s ease forwards;
+    `}
 
   &:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transform: scale(1.02);
     cursor: pointer;
-  }
-
-  &:active {
-    border-color: #f00;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    transform: scale(0.98);
   }
 `;
 
@@ -45,11 +62,6 @@ const ProductImage = styled.img`
   object-fit: cover;
 `;
 
-const ProductName = styled.div`
-  font-weight: bold;
-  font-size: 16px;
-`;
-
 const ProductDetails = styled.div`
   padding: 8px;
   display: flex;
@@ -57,14 +69,9 @@ const ProductDetails = styled.div`
   flex: 1;
 `;
 
-const CategoryTag = styled.div`
-  background: #8ebdb6;
-  color: white;
-  font-size: 12px;
-  padding: 4px 8px;
-  border-radius: 12px;
-  margin: 8px 0;
-  align-self: flex-start;
+const ProductName = styled.div`
+  font-weight: bold;
+  font-size: 16px;
 `;
 
 const ProductDescription = styled.div`
@@ -93,31 +100,90 @@ const UnitCost = styled.div`
   color: #333;
 `;
 
+const OptionsOverlay = styled.div<{ isExiting: boolean }>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  animation: ${({ isExiting }) => (isExiting ? fadeOut : fadeIn)} 0.3s ease;
+`;
+
+const OptionButton = styled.button`
+  background: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #eee;
+  }
+`;
+
+const CancelButton = styled.button`
+  background: #e00;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  color: white;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #c00;
+  }
+`;
+
+const CategoryTag = styled.div`
+  background: #8ebdb6;
+  color: white;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  margin: 8px 0;
+  align-self: flex-start;
+`;
+
 interface ProductCardProps {
-    product: Product;
+  product: Product;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isOptionsVisible, setOptionsVisible] = useState(false);
+  const [isExiting, setIsExiting] = useState(false);
 
-  const handleRemoveProduct = () => {
-    setIsModalVisible(true);
+  const handleShowOptions = () => setOptionsVisible(true);
+
+  const handleHideOptions = () => {
+    setIsExiting(true);
+    setTimeout(() => {
+      setOptionsVisible(false);
+      setIsExiting(false);
+    }, 300); // Wait for the animation to complete
   };
 
-  const handleConfirmDelete = () => {
-    console.log(`Product "${product.name}" deleted.`);
-    setIsModalVisible(false);
-  };
-
-  const handleCancelDelete = () => {
-    setIsModalVisible(false);
-  };
+  const handleDelete = () => console.log(`Product "${product.name}" deleted.`);
+  const handleEdit = () =>
+    console.log(`Edit modal for "${product.name}" opened.`);
 
   return (
-    <>
-      <ContainerWrapper isModalVisible={isModalVisible}>
-        <CardContainer onClick={handleRemoveProduct}>
-          <ProductImage src={product.link} alt={product.name} />
+    <ContainerWrapper>
+      <CardContainer
+        onClick={isOptionsVisible ? undefined : handleShowOptions}
+        isOptionsVisible={isOptionsVisible}
+      >
+        <ProductImage src={product.link} alt={product.name} />
+        {!isOptionsVisible && (
           <ProductDetails>
             <ProductName>{product.name}</ProductName>
             <ProductDescription>{product.description}</ProductDescription>
@@ -127,18 +193,19 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               <UnitCost>{product.price} 💳</UnitCost>
             </ProductFooter>
           </ProductDetails>
-        </CardContainer>
-      </ContainerWrapper>
+        )}
+      </CardContainer>
 
-      {isModalVisible && (
-        <ConfirmationModal
-          modalContent={`Delete ${product.name}?`}
-          onClickYes={handleConfirmDelete}
-          onClickNo={handleCancelDelete}
-        />
+      {isOptionsVisible && (
+        <OptionsOverlay isExiting={isExiting}>
+          <OptionButton onClick={handleEdit}>Edit</OptionButton>
+          <OptionButton onClick={handleDelete}>Delete</OptionButton>
+          <CancelButton onClick={handleHideOptions}>Cancel</CancelButton>
+        </OptionsOverlay>
       )}
-    </>
+    </ContainerWrapper>
   );
 };
 
 export default ProductCard;
+
