@@ -5,10 +5,11 @@ import ProductCard from "./AdminProductCard";
 import FilterTags from "../UserMinimart/FilterTags";
 import SearchBar from "../UserMinimart/SearchBar";
 import FilterModal from "../UserMinimart/FilterModal";
-import { useQuery } from "@apollo/client";
-import { GET_ALL_PRODUCTS } from "../../gql/ops";
+import { useQuery, useMutation } from "@apollo/client";
+import { GET_ALL_PRODUCTS, CREATE_PRODUCT } from "../../gql/ops";
 import { Product } from "../../definitions/Product";
 import ErrorModal from "../General/ErrorModal";
+import AddProductModal from "./AddProductModal";
 import LoadingScreen from "../General/LoadingScreen";
 
 const MinimartContainer = styled.div`
@@ -69,86 +70,133 @@ const Overlay = styled.div<{ isVisible: boolean }>`
 `;
 
 const Inventory: React.FC = () => {
-    const [searchQuery, setSearchQuery] = useState<string>("");
-    const [isFilterModalOpen, setFilterModalOpen] = useState(false);
-    const [showError, setShowError] = useState(true);
-    const [isConfirmationModalOpen, setConfirmationModalOpen] = useState(false);
-    const [filters, setFilters] = useState({
-        cost: null as number | null,
-        type: null as string | null,
-        inStock: false,
-    });
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [isFilterModalOpen, setFilterModalOpen] = useState(false);
+  const [showError, setShowError] = useState(true);
+  const [filters, setFilters] = useState({
+    cost: null as number | null,
+    type: null as string | null,
+    inStock: false,
+  });
+  const [isAddModalVisible, setAddModalVisible] = useState(false);
+  const [addProduct] = useMutation(CREATE_PRODUCT);
 
-    const handleCloseError = () => setShowError(false);
+  const handleCloseError = () => setShowError(false);
 
-    const {
-        loading: productLoading,
-        error: productError,
-        data: productData,
-    } = useQuery(GET_ALL_PRODUCTS, {});
-    if (productLoading) return <LoadingScreen />;
+  const {
+    loading: productLoading,
+    error: productError,
+    data: productData,
+  } = useQuery(GET_ALL_PRODUCTS, {});
+  if (productLoading) return <LoadingScreen />;
 
-    const products: Product[] = productError
-        ? []
-        : productData.getAllAvailableProducts.products;
+  const products: Product[] = productError
+    ? []
+    : productData.getAllAvailableProducts.products;
 
-    // filter products based on search query and filters
-    const filteredProducts = products.filter((product) => {
-        const matchesSearch =
-            product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            product.description.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesCost = filters.cost === null || product.price <= filters.cost;
-        const matchesType = filters.type === null || product.tag === filters.type;
-        const matchesStock = !filters.inStock || product.quantity > 0;
+  // filter products based on search query and filters
+  const filteredProducts = products.filter((product) => {
+    const matchesSearch =
+      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCost = filters.cost === null || product.price <= filters.cost;
+    const matchesType = filters.type === null || product.tag === filters.type;
+    const matchesStock = !filters.inStock || product.quantity > 0;
 
-        return matchesSearch && matchesCost && matchesType && matchesStock;
-    });
+    return matchesSearch && matchesCost && matchesType && matchesStock;
+  });
 
-    // Remove individual filters
-    const removeFilter = (key: keyof typeof filters) => {
-        setFilters((prev) => ({
-            ...prev,
-            [key]: key === "inStock" ? false : null,
-        }));
-    };
+  // Remove individual filters
+  const removeFilter = (key: keyof typeof filters) => {
+    setFilters((prev) => ({
+      ...prev,
+      [key]: key === "inStock" ? false : null,
+    }));
+  };
 
-    return (
-        <>
-            <Overlay isVisible={isFilterModalOpen || isConfirmationModalOpen} />
-            <MinimartContainer>
-                {productError && showError && (
-                    <ErrorModal error={productError} close={handleCloseError} />
-                )}
-                <MinimartBody>
-                    <Toolbar>
-                        <SearchBarAndFilter>
-                            <SearchBar query={searchQuery} onSearchChange={setSearchQuery} />
-                            <FilterButton onClick={() => setFilterModalOpen(true)}>
-                                Filters
-                            </FilterButton>
-                        </SearchBarAndFilter>
-                    </Toolbar>
-                    <FilterTags filters={filters} onRemoveFilter={removeFilter} />
-                    <ProductGrid>
-                        {filteredProducts.map((product, index) => (
-                            <ProductCard key={index} product={product} />
-                        ))}
-                    </ProductGrid>
-                </MinimartBody>
-                <SideBarMenu />
-                {isFilterModalOpen && (
-                    <FilterModal
-                        filters={filters}
-                        onApplyFilters={(newFilters) => {
-                            setFilters(newFilters);
-                            setFilterModalOpen(false);
-                        }}
-                        onClose={() => setFilterModalOpen(false)}
-                    />
-                )}
-            </MinimartContainer>
-        </>
-    );
+  const handleAddProduct = async (newProduct: Product) => {
+    try {
+      await addProduct({
+        variables: {
+          product: newProduct,
+        },
+        update: (cache, { data }) => {
+          if (data?.createProduct) {
+            const existingProducts: any = cache.readQuery({
+              query: GET_ALL_PRODUCTS,
+            });
+            if (existingProducts) {
+              // Add the new product to the cache
+              const updatedProducts = [
+                ...existingProducts.getAllAvailableProducts.products,
+                newProduct,
+              ];
+
+              cache.writeQuery({
+                query: GET_ALL_PRODUCTS,
+                data: {
+                  getAllAvailableProducts: {
+                    ...existingProducts.getAllAvailableProducts,
+                    products: updatedProducts,
+                  },
+                },
+              });
+            }
+          }
+        },
+      });
+
+      console.log("Product added successfully");
+      setAddModalVisible(false); // Close the modal
+    } catch (err) {
+      console.error("Failed to add the product:", err);
+    }
+  };
+
+  return (
+    <>
+      <Overlay isVisible={isFilterModalOpen} />
+      <MinimartContainer>
+        {productError && showError && (
+          <ErrorModal error={productError} close={handleCloseError} />
+        )}
+        <MinimartBody>
+          <button onClick={() => setAddModalVisible(true)}>Add Product</button>
+          <Toolbar>
+            <SearchBarAndFilter>
+              <SearchBar query={searchQuery} onSearchChange={setSearchQuery} />
+              <FilterButton onClick={() => setFilterModalOpen(true)}>
+                Filters
+              </FilterButton>
+            </SearchBarAndFilter>
+          </Toolbar>
+          <FilterTags filters={filters} onRemoveFilter={removeFilter} />
+          <ProductGrid>
+            {filteredProducts.map((product, index) => (
+              <ProductCard key={index} product={product} />
+            ))}
+          </ProductGrid>
+        </MinimartBody>
+        <SideBarMenu />
+        {isFilterModalOpen && (
+          <FilterModal
+            filters={filters}
+            onApplyFilters={(newFilters) => {
+              setFilters(newFilters);
+              setFilterModalOpen(false);
+            }}
+            onClose={() => setFilterModalOpen(false)}
+          />
+        )}
+        {isAddModalVisible && (
+          <AddProductModal
+            onAdd={handleAddProduct}
+            onCancel={() => setAddModalVisible(false)}
+          />
+        )}
+      </MinimartContainer>
+    </>
+  );
 };
 
 export default Inventory;
