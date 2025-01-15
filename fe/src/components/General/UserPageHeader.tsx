@@ -3,6 +3,7 @@ import ProfileDropdown from "./ProfileDropdown";
 import { useNavigate } from "react-router-dom";
 import React from "react";
 import { User } from "../../definitions/User";
+import { ApolloConsumer } from "@apollo/client";
 
 const Header = styled.header`
   display: flex;
@@ -58,20 +59,25 @@ const UserPageHeader: React.FC<{ user: User }> = ({ user }) => {
   const navigate = useNavigate();
 
   return (
-    <Header>
-      <Logo
-        src="/images/company_logo_small.png"
-        alt="company logo"
-        onClick={() => navigate("/dashboard")}
-      />
-      <ProfileContainer>
-        <UserInfo>
-          <Paragraph>Hello, {user.name}</Paragraph>
-          <VoucherInfo>Vouchers: {user.voucher} credits</VoucherInfo>
-        </UserInfo>
-        <ProfileDropdown profilePic="/images/profile-user.png" />
-      </ProfileContainer>
-    </Header>
+    <ApolloConsumer>
+      {(client) => (
+        <Header>
+          <Logo
+            src="/images/company_logo_small.png"
+            alt="company logo"
+            onClick={() => navigate("/dashboard")}
+          />
+          <ProfileContainer>
+            <UserInfo>
+              <Paragraph>Hello, {user.name}</Paragraph>
+              <VoucherInfo>Vouchers: {user.voucher} credits</VoucherInfo>
+            </UserInfo>
+            <ProfileDropdown client={client} profilePic="/images/profile-user.png" />
+          </ProfileContainer>
+        </Header>
+      )}
+    </ApolloConsumer>
+
   );
 };
 

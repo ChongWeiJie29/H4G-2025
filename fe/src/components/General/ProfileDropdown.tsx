@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { ApolloClient } from "@apollo/client";
 
 const ProfilePicture = styled.img`
   width: 50px;
@@ -44,9 +45,10 @@ const DropdownMenu = styled.div`
 // Define prop types
 interface ProfileDropdownProps {
   profilePic: string;
+  client: ApolloClient<object>;
 }
 
-const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ profilePic }) => {
+const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ profilePic, client }) => {
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -65,6 +67,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ profilePic }) => {
         break;
       case "Log out":
         sessionStorage.removeItem('token');
+        client.resetStore();
         navigate("/");
         break;
       default:
