@@ -3,6 +3,7 @@ import UserPageHeader from "../components/General/UserPageHeader";
 import SidebarMenu from "../components/General/SideBarMenu";
 import { useState, ReactNode } from "react";
 import ManageUsers from "../components/Admin/ManageUsers";
+import Inventory from "../components/AdminInventory/Inventory";
 import ErrorModal from "../components/General/ErrorModal";
 import LoadingScreen from "../components/General/LoadingScreen";
 import { useQuery } from "@apollo/client";
@@ -73,7 +74,7 @@ const AdminPage: React.FC = () => {
       case 1:
         return <ManageUsers />;
       case 2:
-        return <div>Tab 2 Content</div>;
+        return <Inventory />;
       case 3:
         return <ManageRequests />;
       case 4:
@@ -94,7 +95,7 @@ const AdminPage: React.FC = () => {
           Manage Users
         </Tab>
         <Tab active={activeTab === 2} onClick={() => setActiveTab(2)}>
-          Tab 2
+          Inventory
         </Tab>
         <Tab active={activeTab === 3} onClick={() => setActiveTab(3)}>
           Manage Requests
