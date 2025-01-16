@@ -203,3 +203,19 @@ export const DELETE_PRODUCT = gql`
     }
   }
 `;
+
+export const GET_PRODUCT_LOGS = gql`
+  query getAllLogs{
+    getAllLogs{
+      message
+      productLogs{
+        log_id
+        action_type
+        product_name
+        old_quantity
+        new_quantity
+        timestamp
+      }
+    }
+  }
+`;
