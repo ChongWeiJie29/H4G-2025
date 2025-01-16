@@ -168,12 +168,12 @@ const ManageRequests: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {voucherRequests.map((voucher) => (
-              <tr key={voucher.voucher_id}>
-                <td>{voucher.voucher_id}</td>
+            {voucherRequests.map((voucher, index) => (
+              <tr key={index + 1}>
+                <td>{index + 1}</td>
                 <td>{voucher.name}</td>
                 <td>{voucher.task}</td>
-                <td>{`$${voucher.amount.toFixed(2)}`}</td>
+                <td>{voucher.amount} 💳</td>
                 <td>
                   <Select
                     value={voucher.status}
