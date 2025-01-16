@@ -25,6 +25,7 @@ const Modal = styled.div`
   padding: 20px;
   width: 400px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
 `;
 
 const ModalTitle = styled.h3`
@@ -46,6 +47,26 @@ const FormGroup = styled.div`
     font-size: 0.9rem;
     border: 1px solid #ccc;
     border-radius: 4px;
+    box-sizing: border-box;
+  }
+`;
+
+const CloseButton = styled.button`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #333;
+  cursor: pointer;
+
+  &:hover {
+    color: #000;
+  }
+
+  &:focus {
+    outline: none;
   }
 `;
 
@@ -114,6 +135,7 @@ const AddUserModal: React.FC<Props> = ({ setIsAddModalOpen }) => {
         <ErrorMessage error={error} />
       }
       <Modal>
+        <CloseButton onClick={() => setIsAddModalOpen(false)}>&times;</CloseButton>
         <ModalTitle>Add New User</ModalTitle>
         <FormGroup>
           <label>Name</label>
