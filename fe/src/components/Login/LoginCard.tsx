@@ -62,6 +62,7 @@ const ForgotPasswordLink = styled.a`
   text-decoration: underline;
   align-self: flex-end;
   margin-bottom: 2rem;
+  cursor: pointer;
 `;
 
 const InputContainer = styled.div`
@@ -117,7 +118,7 @@ const LoginCard: React.FC = () => {
           onClick={() => setShowPassword((prev) => !prev)}
         />
       </InputContainer>
-      <ForgotPasswordLink href="#">Forgot your password?</ForgotPasswordLink>
+      <ForgotPasswordLink onClick={() => navigate("/forgetPassword")}>Forgot your password?</ForgotPasswordLink>
       <Button onClick={onSignIn}>Sign in</Button>
     </Card>
   );
