@@ -6,11 +6,12 @@ import FilterTags from "../UserMinimart/FilterTags";
 import SearchBar from "../UserMinimart/SearchBar";
 import FilterModal from "../UserMinimart/FilterModal";
 import { useQuery, useMutation } from "@apollo/client";
-import { GET_ALL_PRODUCTS, CREATE_PRODUCT } from "../../gql/ops";
+import { GET_ALL_PRODUCTS, CREATE_PRODUCT, DELETE_PRODUCT } from "../../gql/ops";
 import { Product } from "../../definitions/Product";
 import AddProductModal from "./AddProductModal";
 import LoadingScreen from "../General/LoadingScreen";
 import ErrorMessage from "../General/ErrorMessage";
+import ConfirmationModal from "../General/ConfirmationModal";
 
 const MinimartContainer = styled.div`
   display: flex;
@@ -66,7 +67,6 @@ const Overlay = styled.div<{ isVisible: boolean }>`
   pointer-events: ${({ isVisible }) => (isVisible ? "all" : "none")};
   opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
   transition: opacity 0.3s ease;
-  z-index: 999; /* Ensure it's above all other components */
 `;
 
 const Inventory: React.FC = () => {
@@ -78,20 +78,24 @@ const Inventory: React.FC = () => {
     inStock: false,
   });
   const [isAddModalVisible, setAddModalVisible] = useState(false);
+  const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [productToDelete, setProductToDelete] = useState<Product | null>(null);
 
   const [addProduct] = useMutation(CREATE_PRODUCT);
+  const [deleteProduct] = useMutation(DELETE_PRODUCT);
+
   const {
     loading: productLoading,
     error: productError,
     data: productData,
   } = useQuery(GET_ALL_PRODUCTS, {});
+
   if (productLoading) return <LoadingScreen />;
 
   const products: Product[] = productError
     ? []
     : productData.getAllAvailableProducts.products;
 
-  // filter products based on search query and filters
   const filteredProducts = products.filter((product) => {
     const matchesSearch =
       product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -103,7 +107,6 @@ const Inventory: React.FC = () => {
     return matchesSearch && matchesCost && matchesType && matchesStock;
   });
 
-  // Remove individual filters
   const removeFilter = (key: keyof typeof filters) => {
     setFilters((prev) => ({
       ...prev,
@@ -119,7 +122,6 @@ const Inventory: React.FC = () => {
         },
         refetchQueries: [GET_ALL_PRODUCTS],
       });
-
       console.log("Product added successfully");
       setAddModalVisible(false);
     } catch (err) {
@@ -127,13 +129,40 @@ const Inventory: React.FC = () => {
     }
   };
 
+  const handleDeleteProduct = (product: Product) => {
+    setProductToDelete(product);
+    setDeleteModalVisible(true);
+  };
+
+  const confirmDeleteProduct = async () => {
+    if (!productToDelete) return;
+
+    try {
+      await deleteProduct({
+        variables: {
+          name: productToDelete.name,
+        },
+        refetchQueries: [GET_ALL_PRODUCTS],
+      });
+      console.log(`Deleted product: ${productToDelete.name}`);
+    } catch (err) {
+      console.error("Failed to delete the product:", err);
+    } finally {
+      setDeleteModalVisible(false);
+      setProductToDelete(null);
+    }
+  };
+
+  const cancelDeleteProduct = () => {
+    setDeleteModalVisible(false);
+    setProductToDelete(null);
+  };
+
   return (
     <>
-      <Overlay isVisible={isFilterModalOpen} />
+      <Overlay isVisible={isFilterModalOpen || isDeleteModalVisible} />
       <MinimartContainer>
-        {productError && (
-          <ErrorMessage error={productError} />
-        )}
+        {productError && <ErrorMessage error={productError} />}
         <MinimartBody>
           <button onClick={() => setAddModalVisible(true)}>Add Product</button>
           <Toolbar>
@@ -147,7 +176,11 @@ const Inventory: React.FC = () => {
           <FilterTags filters={filters} onRemoveFilter={removeFilter} />
           <ProductGrid>
             {filteredProducts.map((product, index) => (
-              <ProductCard key={index} product={product} />
+              <ProductCard
+                key={index}
+                product={product}
+                onDelete={handleDeleteProduct}
+              />
             ))}
           </ProductGrid>
         </MinimartBody>
@@ -168,9 +201,17 @@ const Inventory: React.FC = () => {
             onCancel={() => setAddModalVisible(false)}
           />
         )}
+        {isDeleteModalVisible && (
+          <ConfirmationModal
+            modalContent={`Are you sure you want to delete "${productToDelete?.name}"?`}
+            onClickYes={confirmDeleteProduct}
+            onClickNo={cancelDeleteProduct}
+          />
+        )}
       </MinimartContainer>
     </>
   );
 };
 
 export default Inventory;
+

@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 import styled, { css, keyframes } from "styled-components";
 import { Product } from "../../definitions/Product";
-import ConfirmationModal from "../General/ConfirmationModal";
-import { DELETE_PRODUCT, GET_ALL_PRODUCTS } from "../../gql/ops";
-import { useMutation } from "@apollo/client";
 
 const fadeIn = keyframes`
   from {
@@ -159,13 +156,12 @@ const CategoryTag = styled.div`
 
 interface ProductCardProps {
   product: Product;
+  onDelete: (product: Product) => void;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product, onDelete }) => {
   const [isOptionsVisible, setOptionsVisible] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
-  const [isModalVisible, setModalVisible] = useState(false);
-  const [deleteProduct] = useMutation(DELETE_PRODUCT);
 
   const handleShowOptions = () => setOptionsVisible(true);
 
@@ -178,27 +174,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   };
 
   const handleDelete = () => {
-    setModalVisible(true);
-  };
-
-  const handleConfirmDelete = async () => {
-    try {
-      await deleteProduct({
-        variables: {
-          name: product.name,
-        },
-        refetchQueries: [GET_ALL_PRODUCTS]
-      });
-      setModalVisible(false);
-      setOptionsVisible(false);
-    } catch (err) {
-      console.error("Failed to delete the product:", err);
+    if (onDelete) {
+      onDelete(product);
     }
-  };
-  
-
-  const handleCancelDelete = () => {
-    setModalVisible(false);
   };
 
   return (
@@ -227,15 +205,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <CancelButton onClick={handleHideOptions}>Cancel</CancelButton>
         </OptionsOverlay>
       )}
-      {isModalVisible && (
-        <ConfirmationModal
-          modalContent={`Are you sure you want to delete "${product.name}"?`}
-          onClickYes={handleConfirmDelete}
-          onClickNo={handleCancelDelete}
-        />
-      )}
     </ContainerWrapper>
   );
 };
 
 export default ProductCard;
+
