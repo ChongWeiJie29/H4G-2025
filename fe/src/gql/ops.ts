@@ -23,6 +23,22 @@ export const GET_USER = gql`
   }
 `;
 
+export const DELETE_USER = gql`
+  mutation deleteUser ($user: String!) {
+    deleteUser (user:$user) {
+      message
+    }
+  }
+`;
+
+export const UPDATE_USER_DETAILS = gql`
+  mutation updateUserDetails ($details:UserUpdateDetailsInput!) {
+    updateUserDetails (details:$details) {
+      message
+    }
+  }
+`;
+
 export const GET_ALL_PRODUCTS = gql`
   query getAllAvailableProducts {
     getAllAvailableProducts {
@@ -173,7 +189,7 @@ export const GET_USER_REQUESTS = gql`
 `;
 
 export const CREATE_PRODUCT = gql`
-  mutation createProduct($product: Product) {
+  mutation createProduct($product: ProductInput!) {
     createProduct(product: $product) {
       message
     }

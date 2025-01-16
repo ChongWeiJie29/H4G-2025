@@ -1,8 +1,8 @@
-import { useQuery, useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { useState } from "react";
 import styled from "styled-components";
 import LoadingScreen from "../General/LoadingScreen";
-import { CREATE_USER, GET_ALL_USERS } from "../../gql/ops";
+import { DELETE_USER, GET_ALL_USERS, UPDATE_USER_DETAILS } from "../../gql/ops";
 import { User } from "../../definitions/User";
 import AddUserModal from "./AddUserModal";
 
@@ -70,35 +70,37 @@ const ErrorMessage = styled.div`
 const darkenColor = (color: string) => color;
 
 const ManageUsers = () => {
-  const { loading: userLoading, error: userError, data: userData } = useQuery(GET_ALL_USERS);
-  // const [editUser] = useMutation(EDIT_USER);
-  // const [deleteUser] = useMutation(DELETE_USER);
+  const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
 
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const { loading: userLoading, error: userError, data: userData } = useQuery(GET_ALL_USERS);
+  const [deleteUser] = useMutation(DELETE_USER);
+  const [updateUserStatus] = useMutation(UPDATE_USER_DETAILS);
 
   if (userLoading) return <LoadingScreen />;
   if (userError) return <ErrorMessage>Failed to load users. Please try again later.</ErrorMessage>;
 
-  const users: User[] = userError ? [] : userData.getAllUsers.users;
-  const usersCount: number = userError ? 0 : userData.getAllUsers.usersCount;
+  const users: User[] = userData.getAllUsers.users;
+  const usersCount: number = userData.getAllUsers.usersCount;
 
   const handleAdd = () => {
     setIsAddModalOpen(true);
   };
 
-  const handleEdit = (user: User) => {
-  //   setSelectedUser(user);
-  //   setIsModalOpen(true);
+  const handleDelete = (name: string) => {
+    if (confirm("Are you sure you want to delete this user?")) {
+      deleteUser({ 
+        variables: { user: name },
+        refetchQueries: [GET_ALL_USERS],
+      });
+    }
   };
 
-  const handleDelete = (userId: string) => {
-    // if (confirm("Are you sure you want to delete this user?")) {
-    //   deleteUser({ variables: { id: userId } }).then(() => {
-    //     alert("User deleted successfully!");
-    //   });
-    // }
+  const handleToggleActiveStatus = (name: string, currentStatus: boolean) => {
+    const newStatus = !currentStatus;
+    updateUserStatus({
+      variables: { details: { name: name, colName: 'isactive' , value: newStatus.toString() } },
+      refetchQueries: [GET_ALL_USERS],
+    })
   };
 
   return (
@@ -111,6 +113,7 @@ const ManageUsers = () => {
         <thead>
           <tr>
             <th>Name</th>
+            <th>Password</th>
             <th>Email</th>
             <th>Phone</th>
             <th>Status</th>
@@ -123,16 +126,21 @@ const ManageUsers = () => {
           {users.map((user) => (
             <tr key={user.email}>
               <td>{user.name}</td>
+              <td>********</td>
               <td>{user.email}</td>
               <td>{user.phone}</td>
               <td>{user.status}</td>
-              <td>{user.isactive ? "Yes" : "No"}</td>
+              <td>
+                <Button 
+                  color={user.isactive ? "#28a745" : "#dc3545"} 
+                  onClick={() => handleToggleActiveStatus(user.name, user.isactive)}
+                >
+                  {user.isactive ? "Deactivate" : "Activate"}
+                </Button>
+              </td>
               <td>{user.voucher !== null ? `$${user.voucher}` : "No Balance"}</td>
               <td>
-                <Button color="#28a745" onClick={() => handleEdit(user)}>
-                  Edit
-                </Button>
-                <Button color="#dc3545" onClick={() => handleDelete(user.email)}>
+                <Button color="#dc3545" onClick={() => handleDelete(user.name)}>
                   Delete
                 </Button>
               </td>
@@ -141,7 +149,7 @@ const ManageUsers = () => {
         </tbody>
       </Table>
       {isAddModalOpen && (
-				<AddUserModal setIsAddModalOpen={setIsAddModalOpen} />
+        <AddUserModal setIsAddModalOpen={setIsAddModalOpen} />
       )}
     </Container>
   );

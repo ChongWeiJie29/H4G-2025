@@ -183,25 +183,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   const handleConfirmDelete = async () => {
     try {
-      const response = await deleteProduct({
+      await deleteProduct({
         variables: {
           name: product.name,
         },
-        update: (cache) => {
-          const existingProducts: any = cache.readQuery({ query: GET_ALL_PRODUCTS });
-          if (existingProducts) {
-            cache.writeQuery({
-              query: GET_ALL_PRODUCTS,
-              data: {
-                getAllAvailableProducts: {
-                  products: existingProducts.getAllAvailableProducts.products.filter(
-                    (p: Product) => p.name !== product.name
-                  ),
-                },
-              },
-            });
-          }
-        },
+        refetchQueries: [GET_ALL_PRODUCTS]
       });
       setModalVisible(false);
       setOptionsVisible(false);

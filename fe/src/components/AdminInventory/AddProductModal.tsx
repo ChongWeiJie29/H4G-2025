@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Product } from "../../definitions/Product";
+import { Product, ProductTag } from "../../definitions/Product"; // Assuming ProductTag enum is imported from the correct file
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -45,6 +45,13 @@ const TextArea = styled.textarea`
   border-radius: 4px;
 `;
 
+const Select = styled.select`
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+`;
+
 const ModalActions = styled.div`
   display: flex;
   justify-content: flex-end;
@@ -76,16 +83,19 @@ interface AddProductModalProps {
 const AddProductModal: React.FC<AddProductModalProps> = ({ onAdd, onCancel }) => {
   const [formData, setFormData] = useState<Product>({
     name: "",
-    tag: "",
+    tag: ProductTag.Electronics, // Set a default value from the ProductTag enum
     link: "",
     price: 0,
     quantity: 0,
     description: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: name === "price" || name === "quantity" ? +value : value }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name === "price" || name === "quantity" ? +value : value,
+    }));
   };
 
   const handleAdd = () => {
@@ -102,7 +112,13 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ onAdd, onCancel }) =>
         </FormGroup>
         <FormGroup>
           <Label>Tag</Label>
-          <Input name="tag" value={formData.tag} onChange={handleChange} />
+          <Select name="tag" value={formData.tag} onChange={handleChange}>
+            {Object.values(ProductTag).map((tag) => (
+              <option key={tag} value={tag}>
+                {tag}
+              </option>
+            ))}
+          </Select>
         </FormGroup>
         <FormGroup>
           <Label>Link</Label>
@@ -144,4 +160,3 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ onAdd, onCancel }) =>
 };
 
 export default AddProductModal;
-

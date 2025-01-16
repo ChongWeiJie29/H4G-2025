@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { styled } from "styled-components";
 import { User, UserType } from "../../definitions/User";
 import { useMutation } from "@apollo/client";
-import { CREATE_USER } from "../../gql/ops";
+import { CREATE_USER, GET_ALL_USERS } from "../../gql/ops";
 import LoadingScreen from "../General/LoadingScreen";
 import ErrorMessage from "../General/ErrorMessage";
 import { useNavigate } from "react-router-dom";
@@ -100,7 +100,10 @@ const AddUserModal: React.FC<Props> = ({ setIsAddModalOpen }) => {
   if (loading) return <LoadingScreen />
 
   const handleSubmit = () => {
-    createUser({ variables: { user: newUser } });
+    createUser({ 
+      variables: { user: newUser },
+      refetchQueries: [GET_ALL_USERS],
+     });
     navigate('/admin');
     setIsAddModalOpen(false);
   }

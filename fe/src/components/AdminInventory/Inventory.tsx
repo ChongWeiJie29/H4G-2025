@@ -78,8 +78,8 @@ const Inventory: React.FC = () => {
     inStock: false,
   });
   const [isAddModalVisible, setAddModalVisible] = useState(false);
-  const [addProduct] = useMutation(CREATE_PRODUCT);
 
+  const [addProduct] = useMutation(CREATE_PRODUCT);
   const {
     loading: productLoading,
     error: productError,
@@ -117,34 +117,11 @@ const Inventory: React.FC = () => {
         variables: {
           product: newProduct,
         },
-        update: (cache, { data }) => {
-          if (data?.createProduct) {
-            const existingProducts: any = cache.readQuery({
-              query: GET_ALL_PRODUCTS,
-            });
-            if (existingProducts) {
-              // Add the new product to the cache
-              const updatedProducts = [
-                ...existingProducts.getAllAvailableProducts.products,
-                newProduct,
-              ];
-
-              cache.writeQuery({
-                query: GET_ALL_PRODUCTS,
-                data: {
-                  getAllAvailableProducts: {
-                    ...existingProducts.getAllAvailableProducts,
-                    products: updatedProducts,
-                  },
-                },
-              });
-            }
-          }
-        },
+        refetchQueries: [GET_ALL_PRODUCTS],
       });
 
       console.log("Product added successfully");
-      setAddModalVisible(false); // Close the modal
+      setAddModalVisible(false);
     } catch (err) {
       console.error("Failed to add the product:", err);
     }
