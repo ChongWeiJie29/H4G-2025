@@ -215,9 +215,9 @@ const ManageRequests: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {productRequests.map((request) => (
-              <tr key={request.request_id}>
-                <td>{request.request_id}</td>
+            {productRequests.map((request, index) => (
+              <tr key={index + 1}>
+                <td>{index + 1}</td>
                 <td>{request.name}</td>
                 <td>{request.product}</td>
                 <td>{`$${request.price.toFixed(2)}`}</td>
