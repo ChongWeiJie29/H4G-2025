@@ -8,6 +8,7 @@ import LoadingScreen from "../components/General/LoadingScreen";
 import { useQuery } from "@apollo/client";
 import { GET_USER } from "../gql/ops";
 import ManageRequests from "../components/Admin/ManageRequests";
+import SummaryReports from "../components/AdminReports/SummaryReports";
 import ErrorMessage from "../components/General/ErrorMessage";
 
 const AdminContainer = styled.div`
@@ -75,7 +76,7 @@ const AdminPage: React.FC = () => {
       case 3:
         return <ManageRequests />;
       case 4:
-        return <div>Tab 4 Content</div>;
+        return <SummaryReports />;
       default:
         return <div>No content available</div>;
     }
@@ -98,7 +99,7 @@ const AdminPage: React.FC = () => {
           Manage Requests
         </Tab>
         <Tab active={activeTab === 4} onClick={() => setActiveTab(4)}>
-          Tab 4
+          Summary & Reports
         </Tab>
       </Tabs>
       <ContentArea>{renderActiveTabContent()}</ContentArea>
