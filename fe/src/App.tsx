@@ -8,9 +8,12 @@ import RequestVoucher from "./pages/RequestVoucher";
 import { CartProvider } from "./components/General/CartContext";
 import AdminPage from "./pages/AdminPage";
 import TransactionHistory from "./pages/TransactionHistory";
+import ProtectedRoute from "./pages/ProtectedRoute";
+import { AuthProvider } from "./components/General/AuthContext";
 
 const App = () => (
-  <CartProvider>
+  <AuthProvider>
+    <CartProvider>
       <Router>
         <Routes>
           <Route path="/" element={<Login />} />
@@ -21,9 +24,19 @@ const App = () => (
           <Route path="/shop" element={<UserMinimart />} />
           <Route path="/cart" element={<UserShoppingCart />} />
           <Route path="/admin" element={<AdminPage />} />
+          {/* Save this for the last step
+          <Route
+              path="/admin"
+              element={
+                <ProtectedRoute>
+                  <AdminPage />
+                </ProtectedRoute>
+              }
+            /> */}
         </Routes>
       </Router>
-  </CartProvider>
+    </CartProvider>
+  </AuthProvider>
 );
 
 export default App;
