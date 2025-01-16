@@ -1,10 +1,5 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
-import { useLazyQuery } from "@apollo/client";
-import { AUTHENTICATE_USER } from "../../gql/ops";
-import LoadingScreen from "../General/LoadingScreen";
-import ErrorMessage from "../General/ErrorMessage";
 
 const Card = styled.div`
   width: 400px;
@@ -41,6 +36,7 @@ const Input = styled.input`
 `;
 
 const Button = styled.button`
+  margin-top: 2rem;
   width: 6rem;
   padding: 0.75rem;
   font-size: 1rem;
@@ -54,15 +50,6 @@ const Button = styled.button`
   &:hover {
     background-color: #e69500;
   }
-`;
-
-const ForgotPasswordLink = styled.a`
-  font-size: 0.875rem;
-  color: black;
-  text-decoration: underline;
-  align-self: flex-end;
-  margin-bottom: 2rem;
-  cursor: pointer;
 `;
 
 const InputContainer = styled.div`
@@ -80,36 +67,14 @@ const EyeIcon = styled.img`
   height: 20px;
 `;
 
-const LoginCard: React.FC = () => {
-  const navigate = useNavigate();
-  const [name, setName] = useState('');
+const CreatePasswordCard: React.FC = () => {
   const [password, setPassword] = useState('');
+  const [retypePassword, setRetypePassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-
-  const [authUser, { loading, error, data }] = useLazyQuery(AUTHENTICATE_USER);
-  
-  if (loading) return <LoadingScreen />;
-  
-  const onSignIn = () => {
-    authUser({
-      variables: { user: { name, password } }
-    });
-  }
-
-  if (!error && data) {
-    sessionStorage.setItem("token", data.authenticateUser.token);
-    navigate("/dashboard");
-  }
 
   return (
     <Card>
-      {error && (
-        <ErrorMessage error={error} />
-      )}
-      <Title>Sign in</Title>
-      <InputContainer>
-        <Input type="text" placeholder="Username" value={name} onChange={(e) => setName(e.target.value)} />
-      </InputContainer>
+      <Title>Create new Password</Title>
       <InputContainer>
         <Input type={showPassword ? "text" : "password"} placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
         <EyeIcon
@@ -118,10 +83,17 @@ const LoginCard: React.FC = () => {
           onClick={() => setShowPassword((prev) => !prev)}
         />
       </InputContainer>
-      <ForgotPasswordLink onClick={() => navigate("/forgetPassword")}>Forgot your password?</ForgotPasswordLink>
-      <Button onClick={onSignIn}>Sign in</Button>
+      <InputContainer>
+        <Input type={showPassword ? "text" : "password"} placeholder="Retype Password" value={retypePassword} onChange={(e) => setRetypePassword(e.target.value)} />
+        <EyeIcon
+          src={showPassword ? "/images/show.png" : "/images/hide.png"}
+          alt="Toggle password visibility"
+          onClick={() => setShowPassword((prev) => !prev)}
+        />
+      </InputContainer>
+      <Button onClick={() => {}}>Submit</Button>
     </Card>
   );
 };
 
-export default LoginCard;
+export default CreatePasswordCard;
