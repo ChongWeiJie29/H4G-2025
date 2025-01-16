@@ -51,6 +51,14 @@ const FilterButton = styled.button`
   cursor: pointer;
 `;
 
+const AddProductButton = styled.button`
+  background: #eee;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 12px 16px;
+  cursor: pointer;
+`;
+
 const SearchBarAndFilter = styled.div`
   display: flex;
   gap: 0 1rem;
@@ -164,7 +172,6 @@ const Inventory: React.FC = () => {
       <MinimartContainer>
         {productError && <ErrorMessage error={productError} />}
         <MinimartBody>
-          <button onClick={() => setAddModalVisible(true)}>Add Product</button>
           <Toolbar>
             <SearchBarAndFilter>
               <SearchBar query={searchQuery} onSearchChange={setSearchQuery} />
@@ -172,6 +179,7 @@ const Inventory: React.FC = () => {
                 Filters
               </FilterButton>
             </SearchBarAndFilter>
+            <AddProductButton onClick={() => setAddModalVisible(true)}>Add Product</AddProductButton>
           </Toolbar>
           <FilterTags filters={filters} onRemoveFilter={removeFilter} />
           <ProductGrid>
