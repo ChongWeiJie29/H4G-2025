@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import SignUpCard from "../components/Login/SignUpCard";
+import CreatePasswordCard from "../components/Login/CreatePasswordCard";
 
 const Container = styled.div`
   width: 100vw;
@@ -12,12 +12,11 @@ const Container = styled.div`
 `;
 
 const SignUpPage: React.FC = () => {
-  return (
-    <Container>
-      <SignUpCard />
-    </Container>
-  );
+    return (
+        <Container>
+            <CreatePasswordCard />
+        </Container>
+    );
 };
 
 export default SignUpPage;
-

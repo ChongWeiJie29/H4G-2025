@@ -3,7 +3,7 @@ import UserDashboard from "./pages/UserDashboard";
 import UserMinimart from "./pages/UserMinimart";
 import UserShoppingCart from "./pages/UserShoppingCart";
 import Login from "./pages/Login";
-import SignUp from "./pages/Login";
+import UniqueInviteLink from "./pages/UniqueInviteLink";
 import UserProfile from "./pages/UserProfile";
 import RequestVoucher from "./pages/RequestVoucher";
 import { CartProvider } from "./components/General/CartContext";
@@ -18,7 +18,7 @@ const App = () => (
       <Router>
         <Routes>
           <Route path="/" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
+          <Route path="/createPassword" element={<UniqueInviteLink />} />
           <Route path="/dashboard" element={<UserDashboard />} />
           <Route path="/profile" element={<UserProfile />} />
           <Route path="/transaction-history" element={<TransactionHistory />} />
