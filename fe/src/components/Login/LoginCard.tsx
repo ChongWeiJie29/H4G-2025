@@ -86,6 +86,7 @@ const LoginCard: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const [authUser, { loading, error, data }] = useLazyQuery(AUTHENTICATE_USER);
+  
   if (loading) return <LoadingScreen />;
   
   const onSignIn = () => {

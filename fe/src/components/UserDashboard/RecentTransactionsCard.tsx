@@ -84,11 +84,9 @@ const RecentTransactionsCard: React.FC<Props> = ({ doneVouchers, doneRequests })
               const request = item as Transaction;
               return (
                 <TransactionItem key={request.request_id}>
-                  <DateRow>{new Date(request.request_time).toLocaleString()}</DateRow>
+                  <DateRow>{new Date(request.request_time).toLocaleString()} - Product Request</DateRow>
                   <TransactionRow>
-                    <span>
-                      {request.product} ({request.quantity}x)
-                    </span>
+                    <span>{request.product} ({request.quantity}x)</span>
                     <span>
                       <StatusBadge status={request.status}>
                         {request.status}
@@ -105,11 +103,9 @@ const RecentTransactionsCard: React.FC<Props> = ({ doneVouchers, doneRequests })
               const voucher = item as Voucher;
               return (
                 <TransactionItem key={voucher.voucher_id}>
-                  <DateRow>{new Date(voucher.request_time).toLocaleString()}</DateRow>
+                  <DateRow>{new Date(voucher.request_time).toLocaleString()} - Voucher</DateRow>
                   <TransactionRow>
-                    <span>
-                      {voucher.task}
-                    </span>
+                    <span>{voucher.task}</span>
                     <span>
                       <StatusBadge status={voucher.status}>
                         {voucher.status}

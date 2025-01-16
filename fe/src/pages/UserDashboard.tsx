@@ -40,10 +40,8 @@ const UserDashboard = () => {
 
   const pendingVouchers: Voucher[] = vouchersError ? [] : vouchersData.getUserVouchers.vouchers.filter(
     (item: Voucher) => item.status === VoucherType.pending);
-  const pendingVouchersCount: number = pendingVouchers.length;
   const pendingRequests: Transaction[] = requestsError ? [] : requestsData.getUserRequests.requests.filter(
     (item: Transaction) => item.status === RequestType.pending);
-  const pendingRequestsCount: number = pendingRequests.length;
 
   const doneVouchers: Voucher[] = vouchersError ? [] : vouchersData.getUserVouchers.vouchers.filter(
     (item: Voucher) => item.status !== VoucherType.pending);
@@ -64,8 +62,9 @@ const UserDashboard = () => {
           <RecentTransactionsCard 
             doneVouchers={doneVouchers}
             doneRequests={doneRequests} />
-          <NotificationsCard pendingVouchers={pendingVouchers} pendingVouchersCount={pendingVouchersCount}
-            pendingRequests={pendingRequests} pendingRequestsCount={pendingRequestsCount} />
+          <NotificationsCard 
+            pendingVouchers={pendingVouchers}
+            pendingRequests={pendingRequests} />
         </CardContainer>
         <AvailableProductsCard products={products} productsCount={productsCount} />
       </DashboardBody>

@@ -87,7 +87,6 @@ const TransactionHistory: React.FC = () => {
         <thead>
           <tr>
             <TableHeader>#</TableHeader>
-            <TableHeader>Name</TableHeader>
             <TableHeader>Product</TableHeader>
             <TableHeader>Price</TableHeader>
             <TableHeader>Quantity</TableHeader>
@@ -100,9 +99,8 @@ const TransactionHistory: React.FC = () => {
           {transactions.map((transaction, index) => (
             <TableRow key={transaction.request_id}>
               <TableCell>{index + 1}</TableCell>
-              <TableCell>{transaction.name}</TableCell>
               <TableCell>{transaction.product}</TableCell>
-              <TableCell>${transaction.price.toFixed(2)}</TableCell>
+              <TableCell>{transaction.price} 💳</TableCell>
               <TableCell>{transaction.quantity}</TableCell>
               <TableCell>
                 <StatusBadge status={transaction.status}>{transaction.status}</StatusBadge>

@@ -1,5 +1,9 @@
-import React, { createContext, useState, useEffect, useContext } from "react";
+import React, { createContext, useState, useEffect, useContext, ReactNode } from "react";
 import { CartItem } from "../../definitions/CartItem";
+
+interface CartProviderProps {
+  children: ReactNode;
+}
 
 interface CartContextProps {
   cartItems: CartItem[];
@@ -11,7 +15,7 @@ interface CartContextProps {
 
 const CartContext = createContext<CartContextProps | undefined>(undefined);
 
-export const CartProvider: React.FC = ({ children }) => {
+export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
   // Load cart from localStorage on mount

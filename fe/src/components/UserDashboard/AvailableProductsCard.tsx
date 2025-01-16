@@ -5,9 +5,9 @@ import { Product } from "../../definitions/Product";
 // Styled components
 const WideCard = styled.div`
   padding: 20px;
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
   text-align: center;
   overflow: hidden;
   position: relative;
@@ -18,39 +18,75 @@ const WideCard = styled.div`
   justify-items: center;
 `;
 
+const Title = styled.h2`
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #333;
+`;
+
 const CarouselWrapper = styled.div`
   width: 100%;
   overflow: hidden;
   position: relative;
+  max-width: 1000px;
+  margin: 0 auto;
 `;
 
 const Carousel = styled.div<{ translatex: number }>`
   display: flex;
-  transition: transform 0.5s ease;
-  transform: ${(props: { translatex: number }) =>
-    `translateX(-${props.translatex}%)`};
+  transition: transform 0.5s ease-in-out;
+  transform: ${(props) => `translateX(-${props.translatex}%)`};
 `;
 
 const CarouselCard = styled.div`
-  flex: 0 0 100%;
+  flex: 0 0 33%; /* Adjust this percentage to show multiple cards at once */
   display: flex;
-  justify-content: space-around;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  margin-right: 20px;
 `;
 
 const Item = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 0.5rem 0 0.5rem 0;
+  margin-bottom: 15px;
 `;
 
 const ProductImage = styled.img`
-  width: 100px;
-  height: 100px;
+  width: 120px;
+  height: 120px;
   object-fit: cover;
   border-radius: 10px;
   margin-bottom: 10px;
+  border: 2px solid #e0e0e0;
+`;
+
+const Description = styled.div`
+  margin-top: 10px;
+  text-align: left;
+  font-size: 14px;
+  color: #666;
+  width: 100%;
+  max-width: 400px;
+`;
+
+const PriceTag = styled.p`
+  font-size: 18px;
+  font-weight: bold;
+  color: #4caf50;
+  margin: 10px 0;
+`;
+
+const QuantityTag = styled.p`
+  font-size: 14px;
+  color: #888;
 `;
 
 const Arrows = styled.div`
@@ -61,24 +97,36 @@ const Arrows = styled.div`
   justify-content: space-between;
   align-items: center;
   transform: translateY(-50%);
-  pointer-events: none; /* Prevents interference with other elements */
+  pointer-events: none;
 `;
 
 const Arrow = styled.button`
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.7);
   color: white;
   border: none;
-  padding: 10px;
+  padding: 12px;
   border-radius: 50%;
   cursor: pointer;
-  pointer-events: auto; /* Reactivates button clicks */
+  pointer-events: auto;
   z-index: 10;
+  transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: rgba(0, 0, 0, 0.9);
   }
 `;
 
+const ArrowLeft = styled(Arrow)`
+  position: absolute;
+  left: 10px;
+`;
+
+const ArrowRight = styled(Arrow)`
+  position: absolute;
+  right: 10px;
+`;
+
+// Component
 interface Props {
   products: Product[];
   productsCount: number;
@@ -91,7 +139,7 @@ const AvailableProductsCard: React.FC<Props> = ({ products, productsCount }) => 
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) =>
-        prevIndex === products.length - 1 ? 0 : prevIndex + 1,
+        prevIndex === products.length - 1 ? 0 : prevIndex + 1
       );
     }, 4000);
 
@@ -100,40 +148,43 @@ const AvailableProductsCard: React.FC<Props> = ({ products, productsCount }) => 
 
   const handlePrev = () => {
     setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? products.length - 1 : prevIndex - 1,
+      prevIndex === 0 ? products.length - 3 : prevIndex - 3 // Show 3 items at a time
     );
   };
 
   const handleNext = () => {
     setCurrentIndex((prevIndex) =>
-      prevIndex === products.length - 1 ? 0 : prevIndex + 1,
+      prevIndex === products.length - 3 ? 0 : prevIndex + 3 // Show 3 items at a time
     );
   };
 
   return (
     <WideCard>
-      <h2>{productsCount} Available Products</h2>
+      <Title>{productsCount} Available Products</Title>
       <CarouselWrapper>
-        <Carousel translatex={currentIndex * 100}>
+        <Carousel translatex={currentIndex * 66.67}>
           {products.map((product, index) => (
             <CarouselCard key={index}>
               <Item>
                 <ProductImage src={product.link} alt={product.name} />
                 <h3>{product.name}</h3>
               </Item>
-              <div>
-                <strong>Description:</strong>
-                <p>{product.description}</p>
-              </div>
-              <p>Tag: {product.tag}</p>
-              <p>Price: {product.price}</p>
-              <p>Quantity: {product.quantity}</p>
+              <Description>
+                <p>
+                  <strong>Description:</strong> {product.description}
+                </p>
+                <p>
+                  <strong>Tag:</strong> {product.tag}
+                </p>
+                <PriceTag>Price: ${product.price.toFixed(2)}</PriceTag>
+                <QuantityTag>Quantity: {product.quantity}</QuantityTag>
+              </Description>
             </CarouselCard>
           ))}
         </Carousel>
         <Arrows>
-          <Arrow onClick={handlePrev}>&lt;</Arrow>
-          <Arrow onClick={handleNext}>&gt;</Arrow>
+          <ArrowLeft onClick={handlePrev}>&lt;</ArrowLeft>
+          <ArrowRight onClick={handleNext}>&gt;</ArrowRight>
         </Arrows>
       </CarouselWrapper>
     </WideCard>

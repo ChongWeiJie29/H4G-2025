@@ -101,24 +101,20 @@ const NoItemsMessage = styled.p`
 
 interface Props {
   pendingVouchers: Voucher[];
-  pendingVouchersCount: number;
   pendingRequests: Transaction[];
-  pendingRequestsCount: number;
 }
 
 const NotificationsCard = ({
   pendingVouchers,
-  pendingVouchersCount,
   pendingRequests,
-  pendingRequestsCount,
 }: Props) => {
   return (
     <NotificationCardContainer>
       <Title>Notifications</Title>
       <NotificationText>
-        You have {pendingVouchersCount} pending voucher
-        {pendingVouchersCount !== 1 ? "s" : ""} and {pendingRequestsCount} pending request
-        {pendingRequestsCount !== 1 ? "s" : ""}.
+        You have {pendingVouchers.length} pending voucher
+        {pendingVouchers.length !== 1 ? "s" : ""} and {pendingRequests.length} pending request
+        {pendingRequests.length !== 1 ? "s" : ""}.
       </NotificationText>
 
       <ListSection>
