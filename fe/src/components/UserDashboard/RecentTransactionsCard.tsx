@@ -1,9 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { useQuery } from "@apollo/client";
-import { GET_USER_REQUESTS } from "../../gql/ops";
-import LoadingScreen from "../General/LoadingScreen";
 import { Transaction, RequestType } from "../../definitions/Transaction";
+import { Voucher, VoucherType } from "../../definitions/Voucher";
 
 // Styled components
 const Card = styled.div`
@@ -40,15 +38,18 @@ const TransactionRow = styled.div`
   gap: 1rem;
 `;
 
-const StatusBadge = styled.span<{ status: RequestType }>`
+const StatusBadge = styled.span<{ status: RequestType | VoucherType }>`
   font-weight: bold;
   color: ${(props) => {
     switch (props.status) {
       case RequestType.accepted:
+      case VoucherType.accepted:
         return "green";
       case RequestType.rejected:
+      case VoucherType.rejected:
         return "red";
       case RequestType.pending:
+      case VoucherType.pending:
       default:
         return "orange";
     }
@@ -60,47 +61,68 @@ const Amount = styled.span<{ type: "in" | "out" }>`
   color: ${(props) => (props.type === "in" ? "green" : "red")};
 `;
 
-const RecentTransactionsCard: React.FC = () => {
-  const { loading, error, data } = useQuery(GET_USER_REQUESTS);
+interface Props {
+  doneVouchers: Voucher[];
+  doneRequests: Transaction[];
+}
 
-  if (loading) return <LoadingScreen />;
-
-  if (error) {
-    return <p>Error loading transactions.</p>;
-  }
-
-  const transactions: Transaction[] = data.getUserRequests.requests.filter(
-    (item: Transaction) => (item.status === RequestType.accepted) || (item.status === RequestType.rejected)
-  );
-  const transactionsCount: number = data.getUserRequests.requestsCount || 0;
+const RecentTransactionsCard: React.FC<Props> = ({ doneVouchers, doneRequests }) => {
+  const combinedItems = [
+    ...doneRequests.map((transaction) => ({ ...transaction, type: "transaction" })),
+    ...doneVouchers.map((voucher) => ({ ...voucher, type: "voucher" })),
+  ].sort((a, b) => new Date(b.request_time).getTime() - new Date(a.request_time).getTime());
 
   return (
     <Card>
-      <h2>Recent Transactions</h2>
-      {transactions.length === 0 ? (
-        <p>No recent transactions.</p>
+      <h2>Recent Transactions and Vouchers</h2>
+      {combinedItems.length === 0 ? (
+        <p>No recent activity.</p>
       ) : (
         <TransactionList>
-          {transactions.map((transaction) => {
-            const requestTime = new Date(transaction.request_time);
-
-            return (
-              <TransactionItem key={transaction.request_id}>
-                <DateRow>{requestTime.toLocaleDateString()}</DateRow>
-                <TransactionRow>
-                  <span>{requestTime.toLocaleTimeString()}</span>
-                  <span>
-                    {transaction.product} ({transaction.quantity}x) 
-                  </span>
-                  <span>
-                    <StatusBadge status={transaction.status}>
-                      {transaction.status}
-                    </StatusBadge>
-                  </span>
-                  <Amount type="out">- {transaction.price * transaction.quantity} 💳</Amount>
-                </TransactionRow>
-              </TransactionItem>
-            );
+          {combinedItems.map((item) => {
+            if (item.type === "transaction") {
+              const request = item as Transaction;
+              return (
+                <TransactionItem key={request.request_id}>
+                  <DateRow>{new Date(request.request_time).toLocaleString()}</DateRow>
+                  <TransactionRow>
+                    <span>
+                      {request.product} ({request.quantity}x)
+                    </span>
+                    <span>
+                      <StatusBadge status={request.status}>
+                        {request.status}
+                      </StatusBadge>
+                    </span>
+                    <Amount type={request.status === RequestType.accepted ? 'out' : 'in'}>
+                      {request.status === RequestType.accepted ? '- ' : '+ ' }
+                      {request.price * request.quantity} 💳
+                    </Amount>
+                  </TransactionRow>
+                </TransactionItem>
+              );
+            } else {
+              const voucher = item as Voucher;
+              return (
+                <TransactionItem key={voucher.voucher_id}>
+                  <DateRow>{new Date(voucher.request_time).toLocaleString()}</DateRow>
+                  <TransactionRow>
+                    <span>
+                      {voucher.task}
+                    </span>
+                    <span>
+                      <StatusBadge status={voucher.status}>
+                        {voucher.status}
+                      </StatusBadge>
+                    </span>
+                    {voucher.status === VoucherType.accepted
+                      ? <Amount type="in">+ {voucher.amount} 💳</Amount>
+                      : 'N/A'
+                    }
+                  </TransactionRow>
+                </TransactionItem>
+              );
+            }
           })}
         </TransactionList>
       )}

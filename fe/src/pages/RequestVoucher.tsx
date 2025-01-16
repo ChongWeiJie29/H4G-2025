@@ -3,11 +3,11 @@ import { useState, ChangeEvent, FormEvent } from "react";
 import UserPageHeader from "../components/General/UserPageHeader";
 import { useMutation, useQuery } from "@apollo/client";
 import { CREATE_VOUCHER, GET_USER, GET_USER_VOUCHERS } from "../gql/ops";
-import ErrorModal from "../components/General/ErrorModal";
 import { useNavigate } from "react-router-dom";
 import SidebarMenu from "../components/General/SideBarMenu";
 import { Voucher } from "../definitions/Voucher";
 import LoadingScreen from "../components/General/LoadingScreen";
+import ErrorMessage from "../components/General/ErrorMessage";
 
 // Styled Components
 const PageContainer = styled.div`
@@ -91,6 +91,7 @@ const VoucherListContainer = styled.div`
   flex: 1;
   max-width: 900px;
   overflow-y: auto;
+  max-height:500px;
 `;
 
 const VoucherList = styled.div`
@@ -126,24 +127,14 @@ const VoucherDate = styled.p`
   margin: 5px 0;
 `;
 
-const SidebarContainer = styled.div`
-  flex: 1;
-  max-width: 250px;
-  padding: 30px;
-  background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-`;
-
 const CollectUserData: React.FC = () => {
   const navigate = useNavigate();
-  const [showError, setShowError] = useState(true);
   const [amount, setAmount] = useState<number>(0);
   const [task, setTask] = useState<string>("");
 
   const { loading: userLoading, error: userError, data: userData } = useQuery(GET_USER, {});
   const { loading: getVouchersLoading, error: getVouchersError, data: getVouchersData } = useQuery(GET_USER_VOUCHERS, {});
-  const [createVoucher, { data: voucherData, loading: voucherLoading, error: voucherError }] = useMutation(CREATE_VOUCHER);
+  const [createVoucher, { loading: voucherLoading, error: voucherError }] = useMutation(CREATE_VOUCHER);
   if (userLoading || voucherLoading || getVouchersLoading) return <LoadingScreen />;
 
   const user = !userError && userData.getUser;
@@ -169,12 +160,10 @@ const CollectUserData: React.FC = () => {
     navigate("/dashboard");
   };
 
-  const handleCloseError = () => setShowError(false);
-
   return (
     <PageContainer>
-      {(userError || voucherError || getVouchersError) && showError && (
-        <ErrorModal error={userError || voucherError || getVouchersError} close={handleCloseError} />
+      {(userError || voucherError || getVouchersError) && (
+        <ErrorMessage error={userError || voucherError || getVouchersError} />
       )}
       <UserPageHeader user={user} />
 

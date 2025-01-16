@@ -4,11 +4,11 @@ import SidebarMenu from "../components/General/SideBarMenu";
 import { useState, ReactNode } from "react";
 import ManageUsers from "../components/Admin/ManageUsers";
 import Inventory from "../components/AdminInventory/Inventory";
-import ErrorModal from "../components/General/ErrorModal";
 import LoadingScreen from "../components/General/LoadingScreen";
 import { useQuery } from "@apollo/client";
 import { GET_USER } from "../gql/ops";
 import ManageRequests from "../components/Admin/ManageRequests";
+import ErrorMessage from "../components/General/ErrorMessage";
 
 const AdminContainer = styled.div`
   max-width: 80vw;
@@ -60,14 +60,11 @@ const ContentArea = styled.div`
 
 const AdminPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<number>(1);
-  const [showError, setShowError] = useState<boolean>(false);
 
   const { loading: userLoading, error: userError, data: userData } = useQuery(GET_USER);
   if (userLoading) return <LoadingScreen />;
 
   const user = userError ? null : userData?.getUser;
-
-  const handleCloseError = () => setShowError(false);
 
   const renderActiveTabContent = (): ReactNode => {
     switch (activeTab) {
@@ -86,8 +83,8 @@ const AdminPage: React.FC = () => {
 
   return (
     <AdminContainer>
-      {userError && showError && 
-      <ErrorModal error={userError} close={handleCloseError} />
+      {userError && 
+      <ErrorMessage error={userError} />
       }
       <UserPageHeader user={user} />
       <Tabs>

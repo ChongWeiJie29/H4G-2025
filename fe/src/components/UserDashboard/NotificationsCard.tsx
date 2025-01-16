@@ -43,7 +43,7 @@ const RequestList = styled.ul`
   display: flex;
   flex-direction: column;
   gap: 15px;
-  max-height: 300px;
+  max-height: 200px;
   overflow-y: auto;
 `;
 
@@ -54,7 +54,7 @@ const VoucherList = styled.ul`
   display: flex;
   flex-direction: column;
   gap: 15px;
-  max-height: 300px;
+  max-height: 200px;
   overflow-y: auto;
 `;
 

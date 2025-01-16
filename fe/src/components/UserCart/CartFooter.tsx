@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { CONFIRM_SHOPPING_CART } from "../../gql/ops";
 import { ApolloClient, useMutation } from "@apollo/client";
-import ErrorModal from "../General/ErrorModal";
 import { useCart } from "../General/CartContext";
 import { CartItem } from "../../definitions/CartItem";
 import { useNavigate } from "react-router-dom";
+import ErrorMessage from "../General/ErrorMessage";
 
 const FooterWrapper = styled.div`
   display: flex;
@@ -50,8 +50,6 @@ interface CartFooterProps {
 
 const CartFooter: React.FC<CartFooterProps> = ({ client, totalCost, userVoucherAmount }) => {
   const navigate = useNavigate();
-  const [showError, setShowError] = useState(true);
-
   const { cartItems, clearCart } = useCart(); // Get cartItems from context
 
   const [confirmShoppingCart, { loading, error }] = useMutation(CONFIRM_SHOPPING_CART, {
@@ -81,14 +79,12 @@ const CartFooter: React.FC<CartFooterProps> = ({ client, totalCost, userVoucherA
     confirmShoppingCart({ variables: { shoppingCart: cartData } });
   };
 
-  const handleCloseError = () => setShowError(false);
-
   const hasInsufficientVouchers = totalCost > userVoucherAmount;
   const emptyCart = cartItems.length === 0;
 
   return (
     <FooterWrapper>
-      {error && showError && <ErrorModal error={error} close={handleCloseError} />}
+      {error && <ErrorMessage error={error} />}
       <TotalCostText>Total cost: {totalCost} 💳</TotalCostText>
       {hasInsufficientVouchers && (
         <InsufficientVouchersText>Insufficient vouchers!</InsufficientVouchersText>

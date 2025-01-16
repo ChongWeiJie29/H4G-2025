@@ -4,8 +4,8 @@ import { User, UserType } from "../../definitions/User";
 import { useMutation } from "@apollo/client";
 import { CREATE_USER } from "../../gql/ops";
 import LoadingScreen from "../General/LoadingScreen";
-import ErrorModal from "../General/ErrorModal";
-import { Navigate, useNavigate } from "react-router-dom";
+import ErrorMessage from "../General/ErrorMessage";
+import { useNavigate } from "react-router-dom";
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -75,7 +75,6 @@ interface Props {
 
 const AddUserModal: React.FC<Props> = ({ setIsAddModalOpen }) => {
   const navigate = useNavigate();
-  const [showError, setShowError] = useState(true);
   const [newUser, setNewUser] = useState<User>({
     name: "",
     password: "",
@@ -97,7 +96,7 @@ const AddUserModal: React.FC<Props> = ({ setIsAddModalOpen }) => {
     }));
   };
 
-  const [createUser, { data, loading, error }] = useMutation(CREATE_USER);
+  const [createUser, { loading, error }] = useMutation(CREATE_USER);
   if (loading) return <LoadingScreen />
 
   const handleSubmit = () => {
@@ -106,12 +105,10 @@ const AddUserModal: React.FC<Props> = ({ setIsAddModalOpen }) => {
     setIsAddModalOpen(false);
   }
 
-  const handleCloseError = () => setShowError(false);
-
   return (
     <ModalOverlay>
-      {error && showError && 
-        <ErrorModal error={error} close={handleCloseError} />
+      {error && 
+        <ErrorMessage error={error} />
       }
       <Modal>
         <ModalTitle>Add New User</ModalTitle>

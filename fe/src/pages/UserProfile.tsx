@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import UserPageHeader from "../components/General/UserPageHeader";
 import SideBarMenu from "../components/General/SideBarMenu";
 import { useQuery } from "@apollo/client";
 import { GET_USER } from "../gql/ops";
-import ErrorModal from "../components/General/ErrorModal";
+import ErrorMessage from "../components/General/ErrorMessage";
 
 // Styled Components
 const ProfilePageContainer = styled.div`
@@ -76,17 +76,14 @@ const TooltipWrapper = styled.div`
 // Main Component
 const UserProfile: React.FC = () => {
   const { loading, error, data } = useQuery(GET_USER, {});
-  const [showError, setShowError] = useState(true);
 
   if (loading) return <p>Loading...</p>;
   const user = !error && data.getUser;
 
-  const handleCloseError = () => setShowError(false);
-
   return (
     <ProfilePageContainer>
-      {error && showError && (
-        <ErrorModal error={error} close={handleCloseError} />
+      {error && (
+        <ErrorMessage error={error} />
       )}
       <UserPageHeader user={user} />
       <ProfileDetailsContainer>

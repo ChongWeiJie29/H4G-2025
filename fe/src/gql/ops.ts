@@ -62,6 +62,7 @@ export const GET_USER_VOUCHERS = gql`
       message
       vouchers {
         voucher_id
+        name
         amount
         task
         status

@@ -6,11 +6,10 @@ import SidebarMenu from "../components/General/SideBarMenu";
 import UserPageHeader from "../components/General/UserPageHeader";
 import { useQuery } from '@apollo/client';
 import { GET_ALL_PRODUCTS, GET_USER, GET_USER_REQUESTS, GET_USER_VOUCHERS } from "../gql/ops";
-import ErrorModal from "../components/General/ErrorModal";
-import { useState } from "react";
 import LoadingScreen from "../components/General/LoadingScreen";
 import { Voucher, VoucherType } from "../definitions/Voucher";
 import { RequestType, Transaction } from "../definitions/Transaction";
+import ErrorMessage from "../components/General/ErrorMessage";
 
 const DashboardContainer = styled.div`
   max-width: 80vw;
@@ -30,8 +29,6 @@ const CardContainer = styled.div`
 `;
 
 const UserDashboard = () => {
-  const [showError, setShowError] = useState(true);
-
   const { loading: userLoading, error: userError, data: userData } = useQuery(GET_USER);
   const { loading: vouchersLoading, error: vouchersError, data: vouchersData } = useQuery(GET_USER_VOUCHERS);
   const { loading: productsLoading, error: productsError, data: productsData } = useQuery(GET_ALL_PRODUCTS);
@@ -40,27 +37,33 @@ const UserDashboard = () => {
   if (userLoading || vouchersLoading || productsLoading || requestsLoading) return <LoadingScreen />;
 
   const user = userError ? null : userData?.getUser;
-  const pendingVouchers = vouchersError ? [] : vouchersData.getUserVouchers.vouchers.filter(
-    (item: Voucher) => item.status === VoucherType.pending) || [];
-  const pendingVouchersCount = pendingVouchers.length;
-  const pendingRequests = requestsError ? [] : requestsData.getUserRequests.requests.filter(
-    (item: Transaction) => item.status === RequestType.pending) || [];
-  const pendingRequestsCount = pendingRequests.length;
 
-  const products = productsError ? [] : productsData?.getAllAvailableProducts?.products || [];
-  const productsCount = productsError ? 0 : productsData?.getAllAvailableProducts?.productsCount || 0;
+  const pendingVouchers: Voucher[] = vouchersError ? [] : vouchersData.getUserVouchers.vouchers.filter(
+    (item: Voucher) => item.status === VoucherType.pending);
+  const pendingVouchersCount: number = pendingVouchers.length;
+  const pendingRequests: Transaction[] = requestsError ? [] : requestsData.getUserRequests.requests.filter(
+    (item: Transaction) => item.status === RequestType.pending);
+  const pendingRequestsCount: number = pendingRequests.length;
 
-  const handleCloseError = () => setShowError(false);
+  const doneVouchers: Voucher[] = vouchersError ? [] : vouchersData.getUserVouchers.vouchers.filter(
+    (item: Voucher) => item.status !== VoucherType.pending);
+  const doneRequests: Transaction[] = requestsError ? [] : requestsData.getUserRequests.requests.filter(
+    (item: Transaction) => item.status !== RequestType.pending);
+
+  const products = productsError ? [] : productsData?.getAllAvailableProducts?.products;
+  const productsCount = productsError ? 0 : productsData?.getAllAvailableProducts?.productsCount;
 
   return (
     <DashboardContainer>
-      {(userError || vouchersError || productsError) && showError && (
-        <ErrorModal error={userError || vouchersError || productsError} close={handleCloseError} />
+      {(userError || vouchersError || productsError) && (
+        <ErrorMessage error={userError || vouchersError || productsError} />
       )}
       <UserPageHeader user={user} />
       <DashboardBody>
         <CardContainer>
-          <RecentTransactionsCard />
+          <RecentTransactionsCard 
+            doneVouchers={doneVouchers}
+            doneRequests={doneRequests} />
           <NotificationsCard pendingVouchers={pendingVouchers} pendingVouchersCount={pendingVouchersCount}
             pendingRequests={pendingRequests} pendingRequestsCount={pendingRequestsCount} />
         </CardContainer>

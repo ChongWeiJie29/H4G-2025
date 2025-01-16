@@ -8,9 +8,9 @@ import FilterModal from "../UserMinimart/FilterModal";
 import { useQuery, useMutation } from "@apollo/client";
 import { GET_ALL_PRODUCTS, CREATE_PRODUCT } from "../../gql/ops";
 import { Product } from "../../definitions/Product";
-import ErrorModal from "../General/ErrorModal";
 import AddProductModal from "./AddProductModal";
 import LoadingScreen from "../General/LoadingScreen";
+import ErrorMessage from "../General/ErrorMessage";
 
 const MinimartContainer = styled.div`
   display: flex;
@@ -72,7 +72,6 @@ const Overlay = styled.div<{ isVisible: boolean }>`
 const Inventory: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isFilterModalOpen, setFilterModalOpen] = useState(false);
-  const [showError, setShowError] = useState(true);
   const [filters, setFilters] = useState({
     cost: null as number | null,
     type: null as string | null,
@@ -80,8 +79,6 @@ const Inventory: React.FC = () => {
   });
   const [isAddModalVisible, setAddModalVisible] = useState(false);
   const [addProduct] = useMutation(CREATE_PRODUCT);
-
-  const handleCloseError = () => setShowError(false);
 
   const {
     loading: productLoading,
@@ -157,8 +154,8 @@ const Inventory: React.FC = () => {
     <>
       <Overlay isVisible={isFilterModalOpen} />
       <MinimartContainer>
-        {productError && showError && (
-          <ErrorModal error={productError} close={handleCloseError} />
+        {productError && (
+          <ErrorMessage error={productError} />
         )}
         <MinimartBody>
           <button onClick={() => setAddModalVisible(true)}>Add Product</button>

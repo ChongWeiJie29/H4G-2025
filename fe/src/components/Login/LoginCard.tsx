@@ -3,8 +3,8 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useLazyQuery } from "@apollo/client";
 import { AUTHENTICATE_USER } from "../../gql/ops";
-import ErrorModal from "../General/ErrorModal";
 import LoadingScreen from "../General/LoadingScreen";
+import ErrorMessage from "../General/ErrorMessage";
 
 const Card = styled.div`
   width: 400px;
@@ -84,13 +84,11 @@ const LoginCard: React.FC = () => {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [showError, setShowError] = useState(true);
 
   const [authUser, { loading, error, data }] = useLazyQuery(AUTHENTICATE_USER);
   if (loading) return <LoadingScreen />;
   
   const onSignIn = () => {
-    setShowError(true);
     authUser({
       variables: { user: { name, password } }
     });
@@ -101,12 +99,10 @@ const LoginCard: React.FC = () => {
     navigate("/dashboard");
   }
 
-  const handleCloseError = () => setShowError(false);
-
   return (
     <Card>
-      {error && showError && (
-        <ErrorModal error={error} close={handleCloseError} />
+      {error && (
+        <ErrorMessage error={error} />
       )}
       <Title>Sign in</Title>
       <InputContainer>

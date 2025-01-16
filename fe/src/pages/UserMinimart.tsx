@@ -11,9 +11,9 @@ import { useQuery } from "@apollo/client";
 import { GET_ALL_PRODUCTS, GET_USER } from "../gql/ops";
 import { User } from "../definitions/User";
 import { Product } from "../definitions/Product";
-import ErrorModal from "../components/General/ErrorModal";
 import LoadingScreen from "../components/General/LoadingScreen";
 import { useCart } from "../components/General/CartContext";
+import ErrorMessage from "../components/General/ErrorMessage";
 
 const MinimartContainer = styled.div`
   display: flex;
@@ -103,14 +103,12 @@ const UserMinimart: React.FC = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isFilterModalOpen, setFilterModalOpen] = useState(false);
-  const [showError, setShowError] = useState(true);
   const [filters, setFilters] = useState({
     cost: null as number | null,
     type: null as string | null,
     inStock: false,
   });
 
-  const handleCloseError = () => setShowError(false);
   const { cartItems } = useCart();
 
   const { loading: productLoading, error: productError, data: productData } = useQuery(GET_ALL_PRODUCTS, {});
@@ -144,8 +142,8 @@ const UserMinimart: React.FC = () => {
 
   return (
     <MinimartContainer>
-      {(productError || userError) && showError && (
-        <ErrorModal error={(productError || userError)} close={handleCloseError} />
+      {(productError || userError) && (
+        <ErrorMessage error={(productError || userError)} />
       )}
       <UserPageHeader user={user} />
       <MinimartBody>
