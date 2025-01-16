@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Product, ProductTag } from "../../definitions/Product"; // Assuming ProductTag enum is imported from the correct file
+import { Product, ProductTag, ProductTagPlaceholders } from "../../definitions/Product"; // Assuming ProductTag enum is imported from the correct file
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -83,7 +83,7 @@ interface AddProductModalProps {
 const AddProductModal: React.FC<AddProductModalProps> = ({ onAdd, onCancel }) => {
   const [formData, setFormData] = useState<Product>({
     name: "",
-    tag: ProductTag.Electronics, // Set a default value from the ProductTag enum
+    tag: ProductTag.HealthAndWellness, // Set a default value from the ProductTag enum
     link: "",
     price: 0,
     quantity: 0,
@@ -115,7 +115,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ onAdd, onCancel }) =>
           <Select name="tag" value={formData.tag} onChange={handleChange}>
             {Object.values(ProductTag).map((tag) => (
               <option key={tag} value={tag}>
-                {tag}
+                {ProductTagPlaceholders[tag]}
               </option>
             ))}
           </Select>
