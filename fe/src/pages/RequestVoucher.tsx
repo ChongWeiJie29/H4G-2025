@@ -172,6 +172,7 @@ const CollectUserData: React.FC = () => {
           <Title>Enter Voucher Request</Title>
           <Form onSubmit={handleSubmit}>
             <Input
+              disabled={!user.isactive}
               type="number"
               placeholder="Amount"
               value={amount}
@@ -179,6 +180,7 @@ const CollectUserData: React.FC = () => {
               required
             />
             <Input
+              disabled={!user.isactive}
               type="text"
               placeholder="Task"
               value={task}

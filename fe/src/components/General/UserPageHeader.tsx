@@ -55,6 +55,12 @@ const ProfileContainer = styled.div`
   gap: 20px;
 `;
 
+const ErrorMessageTag = styled.div`
+  color: red;
+  font-size: 1rem;
+  margin-top: 20px;
+`;
+
 const UserPageHeader: React.FC<{ user: User }> = ({ user }) => {
   const navigate = useNavigate();
 
@@ -68,6 +74,7 @@ const UserPageHeader: React.FC<{ user: User }> = ({ user }) => {
             onClick={() => navigate("/dashboard")}
           />
           <ProfileContainer>
+            {!user.isactive && <ErrorMessageTag>Account is currently suspended.</ErrorMessageTag>}
             <UserInfo>
               <Paragraph>Hello, {user.name}</Paragraph>
               <VoucherInfo>Vouchers: {user.voucher} credits</VoucherInfo>

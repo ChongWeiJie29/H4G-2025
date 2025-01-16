@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "@apollo/client";
 import { useState } from "react";
 import styled from "styled-components";
 import LoadingScreen from "../General/LoadingScreen";
-import { DELETE_USER, GET_ALL_USERS, UPDATE_USER_DETAILS } from "../../gql/ops";
+import { DELETE_USER, GET_ALL_USERS, GET_USER, UPDATE_USER_DETAILS } from "../../gql/ops";
 import { User } from "../../definitions/User";
 import AddUserModal from "./AddUserModal";
 
@@ -99,7 +99,7 @@ const ManageUsers = () => {
     const newStatus = !currentStatus;
     updateUserStatus({
       variables: { details: { name: name, colName: 'isactive' , value: newStatus.toString() } },
-      refetchQueries: [GET_ALL_USERS],
+      refetchQueries: [GET_ALL_USERS, GET_USER],
     })
   };
 

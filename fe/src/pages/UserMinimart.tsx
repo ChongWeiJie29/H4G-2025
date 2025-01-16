@@ -169,7 +169,7 @@ const UserMinimart: React.FC = () => {
         <FilterTags filters={filters} onRemoveFilter={removeFilter} />
         <ProductGrid>
           {filteredProducts.map((product, index) => (
-            <ProductCard key={index} product={product} />
+            <ProductCard key={index} user={user} product={product} />
           ))}
         </ProductGrid>
       </MinimartBody>

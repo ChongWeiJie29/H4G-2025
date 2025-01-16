@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { Product } from "../../definitions/Product";
 import { useCart } from "../General/CartContext";
+import { User } from "../../definitions/User";
 
 const CardContainer = styled.div<{ isClicked: boolean }>`
   position: relative;
@@ -103,16 +104,19 @@ const Notification = styled.div`
 `;
 
 interface ProductCardProps {
-    product: Product;
+  user: User;
+  product: Product;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ user, product }) => {
   const [notification, setNotification] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
   const { addToCart } = useCart();
 
   const handleAddToCart = () => {
-    addToCart(product);
+    if(user.isactive) {
+      addToCart(product);
+    }
 
     setNotification(true);
     setTimeout(() => setNotification(false), 2000);
@@ -137,7 +141,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <UnitCost>{product.price} 💳</UnitCost>
         </ProductFooter>
       </ProductDetails>
-      {notification && <Notification>Item added to cart!</Notification>}
+      {notification && <Notification>{user.isactive ? 'Item added to cart!' : 'Your account is suspended. Cannot add to cart :/'}</Notification>}
     </CardContainer>
   );
 };
