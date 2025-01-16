@@ -219,3 +219,40 @@ export const GET_PRODUCT_LOGS = gql`
     }
   }
 `;
+
+export const GET_ALL_VOUCHERS = gql`
+  query getAllVouchers {
+    getAllVouchers {
+      message
+      vouchers {
+        voucher_id
+        name
+        amount
+        task
+        status
+        request_time
+        response_time
+      }
+      vouchersCount
+    }
+  }
+`;
+
+export const GET_ALL_REQUESTS = gql`
+  query getAllRequests {
+    getAllRequests {
+      message
+      requests {
+        request_id
+        status
+        name
+        product
+        price
+        quantity
+        request_time
+        response_time
+      }
+      requestsCount
+    }
+  }
+`;
