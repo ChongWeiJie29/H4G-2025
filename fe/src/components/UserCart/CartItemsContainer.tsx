@@ -78,7 +78,11 @@ const QuantityValue = styled.span`
   padding: 0 5px;
 `;
 
-const CartItemsContainer: React.FC = () => {
+interface CartItemsContainerProps {
+  cartItems: CartItem[];
+}
+
+const CartItemsContainer: React.FC<CartItemsContainerProps> = () => {
   const { cartItems, addToCart, removeFromCart } = useCart();
   const [itemToRemove, setItemToRemove] = useState<CartItem | null>(null);
 
