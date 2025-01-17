@@ -124,7 +124,7 @@ const InventoryLogs: React.FC = () => {
 
   return (
     <Container>
-      <h2>Inventory Logs</h2>
+      <h3>Inventory Logs</h3>
 
       {/* Search and Filter */}
       <FilterContainer>
