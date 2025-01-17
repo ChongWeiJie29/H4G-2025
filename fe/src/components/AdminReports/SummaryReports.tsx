@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import WeeklyRequests from "./WeeklyRequests";
+import WeeklyRequestsPage from "./WeeklyRequestsPage";
 import InventorySummaryPage from "./InventorySummaryPage";
 
 const PageContainer = styled.div`
@@ -9,7 +9,7 @@ const PageContainer = styled.div`
   padding: 20px;
 `;
 
-const InventorySummaryContainer = styled.div`
+const ComponentContainer = styled.div`
   background-color: #ffffff;
   padding: 20px;
   border: 1px solid #e0e0e0;
@@ -20,13 +20,14 @@ const InventorySummaryContainer = styled.div`
 const SummaryReports: React.FC = () => {
   return (
     <PageContainer>
-      <WeeklyRequests />
-      <InventorySummaryContainer>
+      <ComponentContainer>
+        <WeeklyRequestsPage />
+      </ComponentContainer>
+      <ComponentContainer>
         <InventorySummaryPage />
-      </InventorySummaryContainer>
+      </ComponentContainer>
     </PageContainer>
   );
 };
 
 export default SummaryReports;
-
