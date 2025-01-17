@@ -6,7 +6,8 @@ import TagPieChart from "./InventoryComponents/TagPieChart";
 import TopProducts from "./InventoryComponents/TopProducts";
 import InventoryLogs from "./InventoryComponents/InventoryLogs";
 import PriceHistogram from "./InventoryComponents/PriceHistogram";
-import { GET_ALL_PRODUCTS, GET_ALL_REQUESTS } from "../../gql/ops";
+import { GET_ALL_PRODUCTS, GET_ALL_REQUESTS, GET_PRODUCT_LOGS } from "../../gql/ops";
+import LoadingScreen from "../General/LoadingScreen";
 
 const PageContainer = styled.div`
   padding: 20px;
@@ -32,9 +33,10 @@ const ChartContainer = styled.div`
 const InventorySummaryPage: React.FC = () => {
   const { data: productsData, loading: loadingProducts, error: errorProducts } = useQuery(GET_ALL_PRODUCTS);
   const { data: requestsData, loading: loadingRequests, error: errorRequests } = useQuery(GET_ALL_REQUESTS);
+  const { data: logsData, loading: loadingLogs, error: errorLogs } = useQuery(GET_PRODUCT_LOGS);
 
-  if (loadingProducts || loadingRequests) return <p>Loading...</p>;
-  if (errorProducts || errorRequests) return <p>Error loading data: {errorProducts?.message || errorRequests?.message}</p>;
+  if (loadingProducts || loadingRequests || loadingLogs) return <LoadingScreen />
+  if (errorProducts || errorRequests || errorLogs) return <p>Error loading data: {errorProducts?.message || errorRequests?.message}</p>;
 
   // Prepare data for TotalStats
   const totalProducts = productsData?.getAllAvailableProducts?.productsCount || 0;
@@ -68,6 +70,8 @@ const InventorySummaryPage: React.FC = () => {
   // Prepare data for PriceHistogram
   const priceData = productsData?.getAllAvailableProducts?.products.map((product: any) => product.price);
 
+  const logs = logsData?.getAllLogs?.productLogs || [];
+
   return (
     <PageContainer>
       <h2>Inventory Insights</h2>
@@ -84,7 +88,7 @@ const InventorySummaryPage: React.FC = () => {
         </Charts>
       </ChartContainer>
       <TopProducts products={topProducts} />
-      <InventoryLogs />
+      <InventoryLogs logs={logs}/>
     </PageContainer>
   );
 };

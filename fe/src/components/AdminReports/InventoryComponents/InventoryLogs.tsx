@@ -67,56 +67,16 @@ interface ProductLog {
   timestamp: string;
 }
 
-const InventoryLogs: React.FC = () => {
-  // Mock data for logs
-  const mockLogs: ProductLog[] = [
-    {
-      log_id: "1",
-      action_type: "Add",
-      product_name: "Laptop",
-      old_quantity: 50,
-      new_quantity: 70,
-      timestamp: "2025-01-15T14:23:00Z",
-    },
-    {
-      log_id: "2",
-      action_type: "Remove",
-      product_name: "Chair",
-      old_quantity: 20,
-      new_quantity: 15,
-      timestamp: "2025-01-14T10:15:00Z",
-    },
-    {
-      log_id: "3",
-      action_type: "Update",
-      product_name: "Notebook",
-      old_quantity: 30,
-      new_quantity: 40,
-      timestamp: "2025-01-13T08:45:00Z",
-    },
-    {
-      log_id: "4",
-      action_type: "Add",
-      product_name: "Desk Lamp",
-      old_quantity: 10,
-      new_quantity: 20,
-      timestamp: "2025-01-12T12:30:00Z",
-    },
-    {
-      log_id: "5",
-      action_type: "Remove",
-      product_name: "Smartphone",
-      old_quantity: 80,
-      new_quantity: 60,
-      timestamp: "2025-01-11T09:00:00Z",
-    },
-  ];
+interface InventoryLogsProps {
+  logs: ProductLog[];
+}
 
+const InventoryLogs: React.FC<InventoryLogsProps> = ({ logs }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterDate, setFilterDate] = useState("");
 
   // Filter logs by search term and date
-  const filteredLogs = mockLogs.filter((log) => {
+  const filteredLogs = logs.filter((log) => {
     const matchesSearch = log.product_name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesDate = filterDate ? log.timestamp.startsWith(filterDate) : true;
     return matchesSearch && matchesDate;

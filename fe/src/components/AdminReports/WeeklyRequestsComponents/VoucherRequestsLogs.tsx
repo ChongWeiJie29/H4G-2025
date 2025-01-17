@@ -90,8 +90,7 @@ const VoucherRequestsLogs: React.FC<VoucherRequestsLogsProps> = ({ requests }) =
   const filteredRequests = requests.filter(
     (request) =>
       request.userName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      request.taskDescription.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      request.requestId.includes(searchTerm)
+      request.taskDescription.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Calculate pagination

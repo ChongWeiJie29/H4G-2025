@@ -90,8 +90,7 @@ const PurchaseRequestsLogs: React.FC<PurchaseRequestsLogsProps> = ({ requests })
   const filteredRequests = requests.filter(
     (request) =>
       request.userName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      request.productName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      request.requestId.includes(searchTerm)
+      request.productName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Calculate pagination

@@ -36,7 +36,7 @@ interface PriceHistogramProps {
 
 const PriceHistogram: React.FC<PriceHistogramProps> = ({ priceData }) => {
   // Define price bins for the histogram
-  const bins = [0, 50, 100, 150, 200, 250, 300, 350, 400]; // Example bins
+  const bins = [0, 20, 40, 60, 80, 100, 120, 140, 160, 180, 200]
   const binLabels = bins
     .map((bin, index) =>
       index < bins.length - 1 ? `${bin} - ${bins[index + 1]}` : null,
