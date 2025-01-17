@@ -58,6 +58,26 @@ const DateFilter = styled.input`
   border-radius: 4px;
 `;
 
+const PaginationContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+`;
+const PaginationButton = styled.button`
+  margin: 0 5px;
+  padding: 8px 12px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+
+  &:disabled {
+    background-color: #d3d3d3;
+    cursor: not-allowed;
+  }
+`;
+
 interface ProductLog {
   log_id: string;
   action_type: string;
@@ -74,6 +94,8 @@ interface InventoryLogsProps {
 const InventoryLogs: React.FC<InventoryLogsProps> = ({ logs }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterDate, setFilterDate] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5; // Number of items per page
 
   // Filter logs by search term and date
   const filteredLogs = logs.filter((log) => {
@@ -81,6 +103,18 @@ const InventoryLogs: React.FC<InventoryLogsProps> = ({ logs }) => {
     const matchesDate = filterDate ? log.timestamp.startsWith(filterDate) : true;
     return matchesSearch && matchesDate;
   });
+
+  // Calculate pagination
+  const totalPages = Math.ceil(filteredLogs.length / itemsPerPage);
+  const paginatedLogs = filteredLogs.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  // Handle pagination buttons
+  const handlePrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
+  const handleNext = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+
 
   return (
     <Container>
@@ -114,7 +148,7 @@ const InventoryLogs: React.FC<InventoryLogsProps> = ({ logs }) => {
           </TableRow>
         </TableHead>
         <tbody>
-          {filteredLogs.map((log) => (
+          {paginatedLogs.map((log) => (
             <TableRow key={log.log_id}>
               <TableData>{log.log_id}</TableData>
               <TableData>{log.action_type}</TableData>
@@ -126,6 +160,19 @@ const InventoryLogs: React.FC<InventoryLogsProps> = ({ logs }) => {
           ))}
         </tbody>
       </Table>
+
+      {/* Pagination Controls */}
+      <PaginationContainer>
+        <PaginationButton onClick={handlePrev} disabled={currentPage === 1}>
+          Previous
+        </PaginationButton>
+        <span>
+          Page {currentPage} of {totalPages}
+        </span>
+        <PaginationButton onClick={handleNext} disabled={currentPage === totalPages}>
+          Next
+        </PaginationButton>
+      </PaginationContainer>
     </Container>
   );
 };
