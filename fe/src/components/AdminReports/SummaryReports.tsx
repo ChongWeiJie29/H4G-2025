@@ -7,7 +7,6 @@ const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   padding: 20px;
-  background-color: #f7f7f7;
 `;
 
 const InventorySummaryContainer = styled.div`

@@ -58,6 +58,7 @@ const InventorySummaryPage: React.FC = () => {
 
   return (
     <PageContainer>
+      <h1>Inventory Insights</h1>
       <TotalStats
         totalProducts={totalProducts}
         totalTags={totalTags}
