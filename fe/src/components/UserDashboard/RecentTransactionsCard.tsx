@@ -70,7 +70,7 @@ const RecentTransactionsCard: React.FC<Props> = ({ doneVouchers, doneRequests })
   const combinedItems = [
     ...doneRequests.map((transaction) => ({ ...transaction, type: "transaction" })),
     ...doneVouchers.map((voucher) => ({ ...voucher, type: "voucher" })),
-  ].sort((a, b) => new Date(b.request_time).getTime() - new Date(a.request_time).getTime());
+  ].sort((a, b) => new Date(b.request_time).getTime() - new Date(a.request_time).getTime()).slice(0, 5);
 
   return (
     <Card>
