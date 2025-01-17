@@ -124,7 +124,7 @@ const NotificationsCard = ({
               <ListItem key={index}>
                 <ItemDetails>
                   <ItemTitle>{voucher.task}</ItemTitle>
-                  <ItemSubtitle>{voucher.amount} points</ItemSubtitle>
+                  <ItemSubtitle>{voucher.amount} 💳</ItemSubtitle>
                 </ItemDetails>
               </ListItem>
             ))
