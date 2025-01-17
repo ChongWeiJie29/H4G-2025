@@ -30,11 +30,12 @@ interface FilterTagsProps {
 }
 
 const FilterTags: React.FC<FilterTagsProps> = ({ filters, onRemoveFilter }) => {
-  const appliedFilters = [];
+  const appliedFilters: { key: keyof Filters; label: string }[] = [];
 
-  if (filters.cost !== null) appliedFilters.push({ key: "cost", label: `Cost <= $${filters.cost}` });
+  if (filters.cost !== null) appliedFilters.push({ key: "cost", label: `Cost < ${filters.cost} 💳` });
   if (filters.type !== null) appliedFilters.push({ key: "type", label: `Type: ${filters.type}` });
   if (filters.inStock) appliedFilters.push({ key: "inStock", label: "In Stock" });
+
 
   return (
     <TagContainer>

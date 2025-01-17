@@ -63,7 +63,7 @@ const InventorySummaryPage: React.FC = () => {
   }, {});
 
   const topProducts = Object.entries(productSales || {})
-    .map(([name, count]: [string, number]) => ({ name, count }))
+    .map(([name, count]) => ({ name, count: count as number }))
     .sort((a, b) => b.count - a.count)
     .slice(0, 3);
 
