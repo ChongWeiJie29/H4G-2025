@@ -1,10 +1,12 @@
 import React from "react";
+import { useQuery } from "@apollo/client";
 import styled from "styled-components";
 import TotalStats from "./InventoryComponents/TotalStats";
 import TagPieChart from "./InventoryComponents/TagPieChart";
 import TopProducts from "./InventoryComponents/TopProducts";
 import InventoryLogs from "./InventoryComponents/InventoryLogs";
 import PriceHistogram from "./InventoryComponents/PriceHistogram";
+import { GET_ALL_PRODUCTS, GET_ALL_REQUESTS } from "../../gql/ops";
 
 const PageContainer = styled.div`
   padding: 20px;
@@ -28,38 +30,50 @@ const ChartContainer = styled.div`
 `;
 
 const InventorySummaryPage: React.FC = () => {
-  // Mock data for TotalStats
-  const totalProducts = 120;
-  const totalTags = 5;
-  const totalQuantity = 350;
+  const { data: productsData, loading: loadingProducts, error: errorProducts } = useQuery(GET_ALL_PRODUCTS);
+  const { data: requestsData, loading: loadingRequests, error: errorRequests } = useQuery(GET_ALL_REQUESTS);
 
-  // Mock data for TagPieChart
-  const tagData = [
-    { tag: "Electronics", count: 50 },
-    { tag: "Furniture", count: 30 },
-    { tag: "Stationery", count: 40 },
-    { tag: "Apparel", count: 20 },
-    { tag: "Others", count: 10 },
-  ];
+  if (loadingProducts || loadingRequests) return <p>Loading...</p>;
+  if (errorProducts || errorRequests) return <p>Error loading data: {errorProducts?.message || errorRequests?.message}</p>;
 
-  // Mock data for TopProducts
-  const topProducts = [
-    { name: "Laptop", count: 150 },
-    { name: "Office Chair", count: 120 },
-    { name: "Notebook", count: 100 },
-    { name: "Smartphone", count: 80 },
-    { name: "Desk Lamp", count: 75 },
-  ];
+  // Prepare data for TotalStats
+  const totalProducts = productsData?.getAllAvailableProducts?.productsCount || 0;
+  const totalQuantity = productsData?.getAllAvailableProducts?.products.reduce((acc: number, product: any) => acc + product.quantity, 0) || 0;
 
-  // Mock data for PriceHistogram
-  const priceData = [49, 99, 149, 199, 249, 99, 349, 50, 150, 200];
+  // Prepare data for TagPieChart
+  const tagData = productsData?.getAllAvailableProducts?.products.reduce((tags: any, product: any) => {
+    const existingTag = tags.find((tag: any) => tag.tag === product.tag);
+    if (existingTag) {
+      existingTag.count += 1;
+    } else {
+      tags.push({ tag: product.tag, count: 1 });
+    }
+    return tags;
+  }, []);
+
+  // Prepare data for TopProducts
+  const productSales = requestsData?.getAllRequests?.requests.reduce((sales: any, request: any) => {
+    if (!sales[request.product]) {
+      sales[request.product] = 0;
+    }
+    sales[request.product] += request.quantity;
+    return sales;
+  }, {});
+
+  const topProducts = Object.entries(productSales || {})
+    .map(([name, count]: [string, number]) => ({ name, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 3);
+
+  // Prepare data for PriceHistogram
+  const priceData = productsData?.getAllAvailableProducts?.products.map((product: any) => product.price);
 
   return (
     <PageContainer>
       <h2>Inventory Insights</h2>
       <TotalStats
         totalProducts={totalProducts}
-        totalTags={totalTags}
+        totalTags={tagData?.length || 0}
         totalQuantity={totalQuantity}
       />
       <ChartContainer>
@@ -76,3 +90,4 @@ const InventorySummaryPage: React.FC = () => {
 };
 
 export default InventorySummaryPage;
+
