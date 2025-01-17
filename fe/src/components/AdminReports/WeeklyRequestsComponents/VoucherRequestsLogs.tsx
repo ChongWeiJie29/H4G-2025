@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import StatusFilter from "./StatusFilter";
 
 const LogsContainer = styled.div`
   background-color: #ffffff;
@@ -84,14 +85,18 @@ interface VoucherRequestsLogsProps {
 const VoucherRequestsLogs: React.FC<VoucherRequestsLogsProps> = ({ requests }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
   const itemsPerPage = 5; // Number of items per page
 
   // Filter requests based on the search term
-  const filteredRequests = requests.filter(
-    (request) =>
+  const filteredRequests = requests.filter((request) => {
+    const matchesStatus =
+      !selectedStatus || request.status.toLowerCase() === selectedStatus.toLowerCase();
+    const matchesSearch =
       request.userName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       request.taskDescription.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+    return matchesStatus && matchesSearch;
+  });
 
   // Calculate pagination
   const totalPages = Math.ceil(filteredRequests.length / itemsPerPage);
@@ -114,6 +119,14 @@ const VoucherRequestsLogs: React.FC<VoucherRequestsLogsProps> = ({ requests }) =
         placeholder="Search by user name, task description, or request ID..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
+      />
+
+      <StatusFilter
+        selectedStatus={selectedStatus}
+        onFilterChange={(status) => {
+          setSelectedStatus(status);
+          setCurrentPage(1); // Reset pagination on filter change
+        }}
       />
 
       {/* Requests Table */}

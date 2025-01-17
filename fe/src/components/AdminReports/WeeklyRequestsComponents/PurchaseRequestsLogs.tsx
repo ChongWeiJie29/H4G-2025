@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import StatusFilter from "./StatusFilter";
 
 const LogsContainer = styled.div`
   background-color: #ffffff;
@@ -83,15 +84,19 @@ interface PurchaseRequestsLogsProps {
 
 const PurchaseRequestsLogs: React.FC<PurchaseRequestsLogsProps> = ({ requests }) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5; // Number of items per page
 
-  // Filter requests based on the search term
-  const filteredRequests = requests.filter(
-    (request) =>
+  // Filter and search logic
+  const filteredRequests = requests.filter((request) => {
+    const matchesStatus =
+      !selectedStatus || request.status.toLowerCase() === selectedStatus.toLowerCase();
+    const matchesSearch =
       request.userName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       request.productName.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+    return matchesStatus && matchesSearch;
+  });
 
   // Calculate pagination
   const totalPages = Math.ceil(filteredRequests.length / itemsPerPage);
@@ -107,13 +112,21 @@ const PurchaseRequestsLogs: React.FC<PurchaseRequestsLogsProps> = ({ requests })
   return (
     <LogsContainer>
       <h3>Purchase Requests Logs</h3>
-
+    
       {/* Search Bar */}
       <SearchBar
         type="text"
         placeholder="Search by user name, product name, or request ID..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
+      />
+
+       <StatusFilter
+        selectedStatus={selectedStatus}
+        onFilterChange={(status) => {
+          setSelectedStatus(status);
+          setCurrentPage(1);
+        }}
       />
 
       {/* Requests Table */}
