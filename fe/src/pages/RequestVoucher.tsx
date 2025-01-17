@@ -173,18 +173,18 @@ const CollectUserData: React.FC = () => {
           <Form onSubmit={handleSubmit}>
             <Input
               disabled={!user.isactive}
-              type="number"
-              placeholder="Amount"
-              value={amount}
-              onChange={handleAmountChange}
+              type="text"
+              placeholder="Task name"
+              value={task}
+              onChange={handleTaskChange}
               required
             />
             <Input
               disabled={!user.isactive}
-              type="text"
-              placeholder="Task"
-              value={task}
-              onChange={handleTaskChange}
+              type="number"
+              placeholder="Amount"
+              value={amount}
+              onChange={handleAmountChange}
               required
             />
             <Button type="submit">Submit</Button>
