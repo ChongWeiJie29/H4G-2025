@@ -62,9 +62,6 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ profilePic, client })
       case "View Profile":
         navigate("/profile");
         break;
-      case "Settings":
-        navigate("/settings");
-        break;
       case "Log out":
         sessionStorage.removeItem('token');
         client.resetStore();
@@ -82,7 +79,6 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ profilePic, client })
         <DropdownMenu>
           <ul>
             <li onClick={handleOptionClick("View Profile")}>View Profile</li>
-            <li onClick={handleOptionClick("Settings")}>Settings</li>
             <li onClick={handleOptionClick("Log out")}>Log Out</li>
           </ul>
         </DropdownMenu>

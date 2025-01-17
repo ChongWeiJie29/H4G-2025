@@ -148,7 +148,7 @@ const VoucherRequestsLogs: React.FC<VoucherRequestsLogsProps> = ({ requests }) =
               <TableData>{request.requestId}</TableData>
               <TableData>{request.userName}</TableData>
               <TableData>{request.taskDescription}</TableData>
-              <TableData>{request.voucherAmount}</TableData>
+              <TableData>{request.voucherAmount} 💳</TableData>
               <TableData>{new Date(request.requestDate).toLocaleDateString()}</TableData>
               <TableData>
                 {request.responseDate

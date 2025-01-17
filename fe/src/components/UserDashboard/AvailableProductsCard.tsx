@@ -5,7 +5,6 @@ import { Product } from "../../definitions/Product";
 // Styled components
 const WideCard = styled.div`
   padding: 20px;
-  background-color: #f9f9f9;
   border-radius: 12px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
   text-align: center;
@@ -139,7 +138,7 @@ const AvailableProductsCard: React.FC<Props> = ({ products, productsCount }) => 
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) =>
-        prevIndex === products.length - 1 ? 0 : prevIndex + 1
+        prevIndex === products.length - 2 ? 0 : prevIndex + 1
       );
     }, 4000);
 
@@ -162,7 +161,7 @@ const AvailableProductsCard: React.FC<Props> = ({ products, productsCount }) => 
     <WideCard>
       <Title>{productsCount} Available Products</Title>
       <CarouselWrapper>
-        <Carousel translatex={currentIndex * 66.67}>
+        <Carousel translatex={currentIndex * 38.85}>
           {products.map((product, index) => (
             <CarouselCard key={index}>
               <Item>
@@ -176,7 +175,7 @@ const AvailableProductsCard: React.FC<Props> = ({ products, productsCount }) => 
                 <p>
                   <strong>Tag:</strong> {product.tag}
                 </p>
-                <PriceTag>Price: ${product.price.toFixed(2)}</PriceTag>
+                <PriceTag>Price: {product.price} 💳</PriceTag>
                 <QuantityTag>Quantity: {product.quantity}</QuantityTag>
               </Description>
             </CarouselCard>

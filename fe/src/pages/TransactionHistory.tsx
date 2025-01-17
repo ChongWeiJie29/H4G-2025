@@ -5,15 +5,13 @@ import { useQuery } from '@apollo/client';
 import { GET_USER, GET_USER_REQUESTS } from '../gql/ops';
 import LoadingScreen from '../components/General/LoadingScreen';
 import UserPageHeader from '../components/General/UserPageHeader';
+import SidebarMenu from '../components/General/SideBarMenu';
 
 // Styled Components
 const Container = styled.div`
-  margin: 20px auto;
   padding: 20px;
-  max-width: 800px;
-  background-color: #fff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
+  max-width: 80vw;
+  margin: 0 auto;
 `;
 
 const Title = styled.h1`
@@ -111,6 +109,7 @@ const TransactionHistory: React.FC = () => {
           ))}
         </tbody>
       </Table>
+    <SidebarMenu />
     </Container>
   );
 };

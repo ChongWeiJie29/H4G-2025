@@ -13,6 +13,7 @@ const Header = styled.header`
   background-color: #f8f9fa;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
+  margin-bottom: 1rem;
 `;
 
 const Logo = styled.img`
@@ -77,7 +78,7 @@ const UserPageHeader: React.FC<{ user: User }> = ({ user }) => {
             {!user.isactive && <ErrorMessageTag>Account is currently suspended.</ErrorMessageTag>}
             <UserInfo>
               <Paragraph>Hello, {user.name}</Paragraph>
-              <VoucherInfo>Vouchers: {user.voucher} credits</VoucherInfo>
+              <VoucherInfo>Vouchers: {user.voucher} 💳</VoucherInfo>
             </UserInfo>
             <ProfileDropdown client={client} profilePic="/images/profile-user.png" />
           </ProfileContainer>

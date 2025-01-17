@@ -149,7 +149,7 @@ const PurchaseRequestsLogs: React.FC<PurchaseRequestsLogsProps> = ({ requests })
               <TableData>{request.userName}</TableData>
               <TableData>{request.productName}</TableData>
               <TableData>{request.quantity}</TableData>
-              <TableData>${request.totalPrice.toFixed(2)}</TableData>
+              <TableData>{request.totalPrice} 💳</TableData>
               <TableData>{new Date(request.requestDate).toLocaleDateString()}</TableData>
               <TableData>{request.status}</TableData>
             </TableRow>

@@ -5,7 +5,6 @@ import { Transaction } from "../../definitions/Transaction";
 const NotificationCardContainer = styled.div`
   flex: 1;
   padding: 20px;
-  background-color: #fdfdfd;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   max-width: 600px;

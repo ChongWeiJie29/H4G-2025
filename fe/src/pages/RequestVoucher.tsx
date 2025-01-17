@@ -197,7 +197,7 @@ const CollectUserData: React.FC = () => {
               {vouchers.map((value, index) => (
                 <VoucherItem key={index}>
                   <VoucherDetail>Task: {value.task}</VoucherDetail>
-                  <VoucherDetail>Amount: {value.amount} points</VoucherDetail>
+                  <VoucherDetail>Amount: {value.amount} 💳</VoucherDetail>
                   <VoucherDetail>Status: {value.status}</VoucherDetail>
                   <VoucherDate>Request Time: {new Date(value.request_time).toLocaleString()}</VoucherDate>
                   <VoucherDate>Response Time: {value.response_time ? new Date(value.response_time).toLocaleString() : "N/A"}</VoucherDate>

@@ -47,7 +47,7 @@ interface TopProductsProps {
 const TopProducts: React.FC<TopProductsProps> = ({ products }) => {
   return (
     <Container>
-      <h3>Top 5 Trending Products</h3>
+      <h3>Top 3 Trending Products</h3>
       <ProductList>
         {products.map((product, index) => (
           <ProductItem key={index}>

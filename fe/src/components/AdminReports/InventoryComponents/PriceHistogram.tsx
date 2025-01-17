@@ -84,7 +84,7 @@ const PriceHistogram: React.FC<PriceHistogramProps> = ({ priceData }) => {
       x: {
         title: {
           display: true,
-          text: "Price Range",
+          text: "Price Range in 💳",
         },
       },
       y: {

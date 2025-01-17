@@ -55,7 +55,7 @@ const CartFooter: React.FC<CartFooterProps> = ({ client, totalCost, userVoucherA
   const [confirmShoppingCart, { loading, error }] = useMutation(CONFIRM_SHOPPING_CART, {
     onCompleted: () => {
       clearCart();
-      alert("Purchase confirmed! The voucher amount will be deducted once the request has been approved.");
+      alert("Purchase confirmed! The voucher amount has been deducted.");
       client.clearStore();
       navigate('/dashboard');
     },

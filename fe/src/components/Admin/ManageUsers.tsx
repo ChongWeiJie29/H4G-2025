@@ -138,7 +138,7 @@ const ManageUsers = () => {
                   {user.isactive ? "Deactivate" : "Activate"}
                 </Button>
               </td>
-              <td>{user.voucher !== null ? `$${user.voucher}` : "No Balance"}</td>
+              <td>{user.voucher !== null ? `${user.voucher} 💳` : "No Balance"}</td>
               <td>
                 <Button color="#dc3545" onClick={() => handleDelete(user.name)}>
                   Delete

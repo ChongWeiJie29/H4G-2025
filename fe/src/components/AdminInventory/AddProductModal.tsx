@@ -36,6 +36,7 @@ const Input = styled.input`
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  box-sizing: border-box;
 `;
 
 const TextArea = styled.textarea`
@@ -43,6 +44,7 @@ const TextArea = styled.textarea`
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  box-sizing: border-box;
 `;
 
 const Select = styled.select`

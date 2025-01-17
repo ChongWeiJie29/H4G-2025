@@ -220,7 +220,7 @@ const ManageRequests: React.FC = () => {
                 <td>{index + 1}</td>
                 <td>{request.name}</td>
                 <td>{request.product}</td>
-                <td>{`$${request.price.toFixed(2)}`}</td>
+                <td>{`${request.price} 💳`}</td>
                 <td>{request.quantity}</td>
                 <td>
                   <Select
