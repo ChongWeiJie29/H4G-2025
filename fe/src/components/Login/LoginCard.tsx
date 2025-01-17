@@ -88,7 +88,8 @@ const LoginCard: React.FC = () => {
 
   const [authUser, { loading, error, data }] = useLazyQuery(AUTHENTICATE_USER);
   
-  if (loading) return <LoadingScreen />;
+  if (loading) return <LoadingScreen message="Our free server takes a while to 
+  start up on your first login (about 2 minutes) so please be patient!" />;
   
   const onSignIn = () => {
     authUser({
