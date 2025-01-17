@@ -1,12 +1,13 @@
 import React from "react";
 import styled from "styled-components";
-import WeeklyRequestsPage from "./WeeklyRequestsPage";
+import RequestsSummaryPage from "./RequestsSummaryPage";
 import InventorySummaryPage from "./InventorySummaryPage";
 
 const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   padding: 20px;
+  gap: 1rem 0;
 `;
 
 const ComponentContainer = styled.div`
@@ -21,7 +22,7 @@ const SummaryReports: React.FC = () => {
   return (
     <PageContainer>
       <ComponentContainer>
-        <WeeklyRequestsPage />
+        <RequestsSummaryPage />
       </ComponentContainer>
       <ComponentContainer>
         <InventorySummaryPage />

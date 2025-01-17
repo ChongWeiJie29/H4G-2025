@@ -9,7 +9,7 @@ const PageContainer = styled.div`
   min-height: 100vh;
 `;
 
-const WeeklyRequestsPage: React.FC = () => {
+const RequestsSummaryPage: React.FC = () => {
   const totalPurchaseRequests = 120;
   const totalVoucherRequests = 50;
   const totalUsersInvolved = 35;
@@ -71,4 +71,4 @@ const WeeklyRequestsPage: React.FC = () => {
   );
 };
 
-export default WeeklyRequestsPage;
+export default RequestsSummaryPage;
