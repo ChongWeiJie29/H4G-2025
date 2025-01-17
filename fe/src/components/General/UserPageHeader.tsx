@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import ProfileDropdown from "./ProfileDropdown";
 import { useNavigate } from "react-router-dom";
-import React, { useState } from "react";
+import React from "react";
 import { User } from "../../definitions/User";
 import { ApolloConsumer } from "@apollo/client";
 
@@ -88,15 +88,12 @@ const ViewButton = styled.button`
 
 const UserPageHeader: React.FC<{ user: User }> = ({ user }) => {
   const navigate = useNavigate();
-  const [isAdminView, setIsAdminView] = useState(false);
 
   const switchToUserView = () => {
-    setIsAdminView(false);
     navigate("/dashboard");
   };
 
   const switchToAdminView = () => {
-    setIsAdminView(true);
     navigate("/admin");
   };
 
