@@ -1,8 +1,11 @@
 import React from "react";
+import { useQuery } from "@apollo/client";
 import styled from "styled-components";
 import HeaderSummary from "./WeeklyRequestsComponents/HeaderSummary";
 import PurchaseRequestsLogs from "./WeeklyRequestsComponents/PurchaseRequestsLogs";
 import VoucherRequestsLogs from "./WeeklyRequestsComponents/VoucherRequestsLogs";
+import { GET_ALL_REQUESTS, GET_ALL_VOUCHERS } from "../../gql/ops";
+import LoadingScreen from "../General/LoadingScreen";
 
 const PageContainer = styled.div`
   padding: 20px;
@@ -10,52 +13,34 @@ const PageContainer = styled.div`
 `;
 
 const RequestsSummaryPage: React.FC = () => {
-  const totalPurchaseRequests = 120;
-  const totalVoucherRequests = 50;
-  const totalUsersInvolved = 35;
+  const { data: purchaseData, loading: loadingPurchases, error: errorPurchases } = useQuery(GET_ALL_REQUESTS);
+  const { data: voucherData, loading: loadingVouchers, error: errorVouchers } = useQuery(GET_ALL_VOUCHERS);
 
-  const purchaseRequests = [
-    {
-      requestId: "101",
-      userName: "Alice",
-      productName: "Laptop",
-      quantity: 2,
-      totalPrice: 2000,
-      requestDate: "2025-01-15",
-      status: "Approved",
-    },
-    {
-      requestId: "102",
-      userName: "Bob",
-      productName: "Office Chair",
-      quantity: 1,
-      totalPrice: 150,
-      requestDate: "2025-01-16",
-      status: "Pending",
-    },
-    // Add more mock data as needed...
-  ];
+  if (loadingPurchases || loadingVouchers) return <LoadingScreen />;
+  if (errorPurchases || errorVouchers) return <p>Error: Unable to fetch data</p>;
 
-  const voucherRequests = [
-    {
-      requestId: "201",
-      userName: "Alice",
-      taskDescription: "Write blog posts",
-      voucherAmount: 10,
-      requestDate: "2025-01-15",
-      responseDate: "2025-01-16",
-      status: "Approved",
-    },
-    {
-      requestId: "202",
-      userName: "Charlie",
-      taskDescription: "Organize a workshop",
-      voucherAmount: 5,
-      requestDate: "2025-01-16",
-      status: "Pending",
-    },
-    // Add more mock data as needed...
-  ];
+  const totalPurchaseRequests = purchaseData?.getAllRequests?.requestsCount || 0;
+  const totalVoucherRequests = voucherData?.getAllVouchers?.vouchersCount || 0;
+
+  const purchaseRequests = purchaseData?.getAllRequests?.requests.map((req: any) => ({
+    requestId: req.request_id,
+    userName: req.name,
+    productName: req.product,
+    quantity: req.quantity,
+    totalPrice: req.price * req.quantity,
+    requestDate: req.request_time,
+    status: req.status,
+  }));
+
+  const voucherRequests = voucherData?.getAllVouchers?.vouchers.map((voucher: any) => ({
+    requestId: voucher.voucher_id,
+    userName: voucher.name,
+    taskDescription: voucher.task,
+    voucherAmount: voucher.amount,
+    requestDate: voucher.request_time,
+    responseDate: voucher.response_time,
+    status: voucher.status,
+  }));
 
   return (
     <PageContainer>
@@ -63,7 +48,6 @@ const RequestsSummaryPage: React.FC = () => {
       <HeaderSummary
         totalPurchaseRequests={totalPurchaseRequests}
         totalVoucherRequests={totalVoucherRequests}
-        totalUsersInvolved={totalUsersInvolved}
       />
       <PurchaseRequestsLogs requests={purchaseRequests} />
       <VoucherRequestsLogs requests={voucherRequests} />
@@ -72,3 +56,4 @@ const RequestsSummaryPage: React.FC = () => {
 };
 
 export default RequestsSummaryPage;
+

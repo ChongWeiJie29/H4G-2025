@@ -32,13 +32,11 @@ const StatLabel = styled.p`
 interface HeaderSummaryProps {
   totalPurchaseRequests: number;
   totalVoucherRequests: number;
-  totalUsersInvolved: number;
 }
 
 const HeaderSummary: React.FC<HeaderSummaryProps> = ({
   totalPurchaseRequests,
   totalVoucherRequests,
-  totalUsersInvolved,
 }) => {
   return (
     <HeaderContainer>
@@ -49,10 +47,6 @@ const HeaderSummary: React.FC<HeaderSummaryProps> = ({
       <StatCard>
         <StatNumber>{totalVoucherRequests}</StatNumber>
         <StatLabel>Total Voucher Requests</StatLabel>
-      </StatCard>
-      <StatCard>
-        <StatNumber>{totalUsersInvolved}</StatNumber>
-        <StatLabel>Total Users Involved</StatLabel>
       </StatCard>
     </HeaderContainer>
   );
