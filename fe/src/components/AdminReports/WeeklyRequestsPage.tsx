@@ -59,7 +59,7 @@ const WeeklyRequestsPage: React.FC = () => {
 
   return (
     <PageContainer>
-      <h2>Weekly Requests Insights</h2>
+      <h2>Requests Insights</h2>
       <HeaderSummary
         totalPurchaseRequests={totalPurchaseRequests}
         totalVoucherRequests={totalVoucherRequests}

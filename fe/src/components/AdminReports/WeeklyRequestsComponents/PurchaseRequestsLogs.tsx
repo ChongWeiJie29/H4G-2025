@@ -107,7 +107,7 @@ const PurchaseRequestsLogs: React.FC<PurchaseRequestsLogsProps> = ({ requests })
 
   return (
     <LogsContainer>
-      <h2>Purchase Requests Logs</h2>
+      <h3>Purchase Requests Logs</h3>
 
       {/* Search Bar */}
       <SearchBar

@@ -107,7 +107,7 @@ const VoucherRequestsLogs: React.FC<VoucherRequestsLogsProps> = ({ requests }) =
 
   return (
     <LogsContainer>
-      <h2>Voucher Requests Logs</h2>
+      <h3>Voucher Requests Logs</h3>
 
       {/* Search Bar */}
       <SearchBar
