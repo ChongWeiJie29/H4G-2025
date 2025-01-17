@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Filters } from "../../definitions/Filters";
+import { ProductTag } from "../../definitions/Product";
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -18,7 +19,7 @@ const ModalContent = styled.div`
   background: white;
   padding: 16px;
   border-radius: 8px;
-  width: 300px;
+  width: 40%;
 `;
 
 const Section = styled.div`
@@ -46,10 +47,11 @@ const CheckboxInput = styled.input`
 `;
 
 const FilterButtons = styled.button`
-  position: relative;
-  left: 50%;
   background: white;
   border: none;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
 `;
 
 const FilterButton = styled.button`
@@ -119,7 +121,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
         <Section>
           <SectionTitle>Type</SectionTitle>
           <SectionOptions>
-            {["Fruits", "Bakery", "Beverages"].map((type) => (
+            {Object.values(ProductTag).map((type) => (
               <CheckboxLabel key={type}>
                 <CheckboxInput
                   type="checkbox"
