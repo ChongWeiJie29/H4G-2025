@@ -27,7 +27,16 @@ const App = () => (
           <Route path="/voucher-request" element={<RequestVoucher />} />
           <Route path="/shop" element={<UserMinimart />} />
           <Route path="/cart" element={<UserShoppingCart />} />
-          <Route path="/admin" element={<AdminPage />} />
+                    {/*<Route path="/admin" element={<AdminPage />} />
+                */}
+          <Route
+              path="/admin"
+              element={
+                <ProtectedRoute>
+                  <AdminPage />
+                </ProtectedRoute>
+              }
+            />
           {/* Save this for the last step
           <Route
               path="/admin"
