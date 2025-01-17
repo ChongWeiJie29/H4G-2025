@@ -12,13 +12,11 @@ import {
 // Register chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const ChartContainer = styled.div`
-  background-color: #ffffff;
-  padding: 20px;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
+const PieContainer = styled.div`
+  width: 100%;
+  height: auto;
+  max-width: 500px;
+  min-width: 200px;
 `;
 
 interface TagPieChartProps {
@@ -54,6 +52,10 @@ const TagPieChart: React.FC<TagPieChartProps> = ({ tagData }) => {
       legend: {
         position: "bottom",
       },
+      title: {
+        display: true,
+        text: "Inventory Distribution by Tags",
+      },
       tooltip: {
         callbacks: {
           label: (tooltipItem) => {
@@ -67,12 +69,10 @@ const TagPieChart: React.FC<TagPieChartProps> = ({ tagData }) => {
   };
 
   return (
-    <ChartContainer>
-      <h2>Inventory Distribution by Tags</h2>
+    <PieContainer>
       <Pie data={data} options={options} />
-    </ChartContainer>
+    </PieContainer>
   );
 };
 
 export default TagPieChart;
-

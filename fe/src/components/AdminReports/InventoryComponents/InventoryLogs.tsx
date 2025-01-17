@@ -12,7 +12,6 @@ const Container = styled.div`
 const SearchBar = styled.input`
   width: 100%;
   padding: 10px;
-  margin-bottom: 20px;
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
@@ -50,6 +49,7 @@ const FilterContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 0 0.6rem;
 `;
 
 const DateFilter = styled.input`

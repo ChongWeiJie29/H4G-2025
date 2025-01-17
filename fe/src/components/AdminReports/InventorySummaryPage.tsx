@@ -4,10 +4,29 @@ import TotalStats from "./InventoryComponents/TotalStats";
 import TagPieChart from "./InventoryComponents/TagPieChart";
 import TopProducts from "./InventoryComponents/TopProducts";
 import InventoryLogs from "./InventoryComponents/InventoryLogs";
+import PriceHistogram from "./InventoryComponents/PriceHistogram";
 
 const PageContainer = styled.div`
   padding: 20px;
   min-height: 100vh;
+`;
+
+const Charts = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+`;
+
+const ChartContainer = styled.div`
+  background-color: #ffffff;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 100%;
 `;
 
 const InventorySummaryPage: React.FC = () => {
@@ -34,23 +53,24 @@ const InventorySummaryPage: React.FC = () => {
     { name: "Desk Lamp", count: 75 },
   ];
 
+  // Mock data for PriceHistogram
+  const priceData = [49, 99, 149, 199, 249, 99, 349, 50, 150, 200];
+
   return (
     <PageContainer>
-      <h2>Inventory Insights</h2>
-      {/* Total Stats Section */}
       <TotalStats
         totalProducts={totalProducts}
         totalTags={totalTags}
         totalQuantity={totalQuantity}
       />
-
-      {/* Tag Pie Chart Section */}
-      <TagPieChart tagData={tagData} />
-
-      {/* Top Products Section */}
+      <ChartContainer>
+        <h2>Inventory Distribution</h2>
+        <Charts>
+          <TagPieChart tagData={tagData} />
+          <PriceHistogram priceData={priceData} />
+        </Charts>
+      </ChartContainer>
       <TopProducts products={topProducts} />
-
-      {/* Inventory Logs Section */}
       <InventoryLogs />
     </PageContainer>
   );
