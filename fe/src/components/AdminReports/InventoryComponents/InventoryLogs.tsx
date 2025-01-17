@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useQuery, gql } from "@apollo/client";
 
 const Container = styled.div`
   background-color: #ffffff;
@@ -59,21 +58,6 @@ const DateFilter = styled.input`
   border-radius: 4px;
 `;
 
-const GET_PRODUCT_LOGS = gql`
-  query getAllLogs {
-    getAllLogs {
-      productLogs {
-        log_id
-        action_type
-        product_name
-        old_quantity
-        new_quantity
-        timestamp
-      }
-    }
-  }
-`;
-
 interface ProductLog {
   log_id: string;
   action_type: string;
@@ -84,18 +68,55 @@ interface ProductLog {
 }
 
 const InventoryLogs: React.FC = () => {
-  const { data, loading, error } = useQuery(GET_PRODUCT_LOGS);
+  // Mock data for logs
+  const mockLogs: ProductLog[] = [
+    {
+      log_id: "1",
+      action_type: "Add",
+      product_name: "Laptop",
+      old_quantity: 50,
+      new_quantity: 70,
+      timestamp: "2025-01-15T14:23:00Z",
+    },
+    {
+      log_id: "2",
+      action_type: "Remove",
+      product_name: "Chair",
+      old_quantity: 20,
+      new_quantity: 15,
+      timestamp: "2025-01-14T10:15:00Z",
+    },
+    {
+      log_id: "3",
+      action_type: "Update",
+      product_name: "Notebook",
+      old_quantity: 30,
+      new_quantity: 40,
+      timestamp: "2025-01-13T08:45:00Z",
+    },
+    {
+      log_id: "4",
+      action_type: "Add",
+      product_name: "Desk Lamp",
+      old_quantity: 10,
+      new_quantity: 20,
+      timestamp: "2025-01-12T12:30:00Z",
+    },
+    {
+      log_id: "5",
+      action_type: "Remove",
+      product_name: "Smartphone",
+      old_quantity: 80,
+      new_quantity: 60,
+      timestamp: "2025-01-11T09:00:00Z",
+    },
+  ];
+
   const [searchTerm, setSearchTerm] = useState("");
   const [filterDate, setFilterDate] = useState("");
 
-  if (loading) return <p>Loading logs...</p>;
-  if (error) return <p>Error fetching logs: {error.message}</p>;
-
-  // Logs data
-  const logs: ProductLog[] = data?.getAllLogs?.productLogs || [];
-
   // Filter logs by search term and date
-  const filteredLogs = logs.filter((log) => {
+  const filteredLogs = mockLogs.filter((log) => {
     const matchesSearch = log.product_name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesDate = filterDate ? log.timestamp.startsWith(filterDate) : true;
     return matchesSearch && matchesDate;
